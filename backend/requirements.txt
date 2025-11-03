@@ -1,0 +1,34 @@
+# requirements.txt
+fastapi
+uvicorn
+pymongo
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+python-dotenv
+python-jose
+twilio
+
+# ASR Dependencies
+torch
+torchaudio
+whisper
+faster-whisper
+transformers
+spacy
+jiwer
+scipy
+sounddevice
+yt-dlp
+ffmpeg-python
+python-multipart
+googletrans==4.0.0rc1
+IndicTransToolkit
+sentencepiece
+
+# TTS Dependencies
+TTS
+gTTS
+pydub
+soundfile
+parler-tts
+numpy

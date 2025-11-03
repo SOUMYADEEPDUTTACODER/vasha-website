@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Vasha AI Design System - Modern AI Platform Aesthetics */
+
+@layer base {
+  :root {
+    /* Core background and foreground */
+    --background: 240 10% 98%;
+    --foreground: 240 10% 9%;
+
+    /* Cards and surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 9%;
+
+    /* Popover components */
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 9%;
+
+    /* AI Brand Primary - Deep blue */
+    --primary: 240 90% 58%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 240 85% 65%;
+
+    /* Secondary - Soft blue-gray */
+    --secondary: 240 6% 95%;
+    --secondary-foreground: 240 10% 20%;
+
+    /* Muted tones */
+    --muted: 240 6% 95%;
+    --muted-foreground: 240 4% 46%;
+
+    /* Accent - Electric purple */
+    --accent: 260 95% 70%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 240 6% 90%;
+    --input: 240 6% 95%;
+    --ring: 240 90% 58%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Gradients for visual appeal */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--secondary)));
+    
+    /* Shadows and effects */
+    --shadow-glow: 0 8px 32px hsl(var(--primary) / 0.15);
+    --shadow-card: 0 4px 16px hsl(var(--foreground) / 0.05);
+    
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .dark {
+    /* Dark mode - Deep space aesthetic */
+    --background: 240 12% 8%;
+    --foreground: 240 5% 95%;
+
+    /* Dark cards */
+    --card: 240 10% 12%;
+    --card-foreground: 240 5% 95%;
+
+    /* Dark popover */
+    --popover: 240 10% 12%;
+    --popover-foreground: 240 5% 95%;
+
+    /* Dark primary - Bright blue for contrast */
+    --primary: 240 90% 65%;
+    --primary-foreground: 240 12% 8%;
+    --primary-glow: 240 85% 70%;
+
+    /* Dark secondary */
+    --secondary: 240 8% 15%;
+    --secondary-foreground: 240 5% 85%;
+
+    /* Dark muted */
+    --muted: 240 8% 15%;
+    --muted-foreground: 240 5% 65%;
+
+    /* Dark accent - Electric purple */
+    --accent: 260 95% 75%;
+    --accent-foreground: 240 12% 8%;
+
+    /* Dark destructive */
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Dark borders */
+    --border: 240 8% 20%;
+    --input: 240 8% 15%;
+    --ring: 240 90% 65%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Gradients for visual appeal */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--secondary)));
+    
+    /* Shadows and effects */
+    --shadow-glow: 0 8px 32px hsl(var(--primary) / 0.15);
+    --shadow-card: 0 4px 16px hsl(var(--foreground) / 0.05);
+    
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom gradients */
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  
+  /* Glow effects */
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* Model Card Animation and Hover Styling */
+@keyframes pop-fade {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(40px);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.animate-pop-fade {
+  animation: pop-fade 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.model-card-hover {
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s;
+}
+.model-card-hover:hover {
+  transform: scale(1.07);
+  box-shadow: 0 8px 32px #646cff55, 0 0 0 2px #646cff;
+  z-index: 1;
+}
+
+@keyframes fadeHeader {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.model-img-fade {
+  opacity: 0;
+  animation: fadeHeader 2s ease-in-out 0.5s 1 forwards;
+}

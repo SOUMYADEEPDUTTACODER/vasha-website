@@ -700,7 +700,8 @@ async def process_audio_upload(
     file: UploadFile = File(...),
     model: str = Form("whisper"),
     whisper_size: str = Form("large"),
-    decoding: str = Form("ctc")
+    decoding: str = Form("ctc"),
+    lid_model: str = Form("whisper")
 ):
     """
     Process audio file upload for ASR with automatic language detection
@@ -758,7 +759,8 @@ async def process_audio_upload(
                 audio_path=processed_path,
                 asr_model=model,
                 whisper_size=whisper_size,
-                decoding=decoding
+                decoding=decoding,
+                lid_model=lid_model
             )
             
             if result["success"]:
@@ -791,7 +793,8 @@ async def process_youtube_audio(
     youtube_url: str = Form(...),
     model: str = Form("whisper"),
     whisper_size: str = Form("large"),
-    decoding: str = Form("ctc")
+    decoding: str = Form("ctc"),
+    lid_model: str = Form("whisper")
 ):
     """
     Process YouTube video for ASR with automatic language detection
@@ -811,7 +814,8 @@ async def process_youtube_audio(
             youtube=youtube_url,
             asr_model=model,
             whisper_size=whisper_size,
-            decoding=decoding
+            decoding=decoding,
+            lid_model=lid_model
         )
         
         if result["success"]:
@@ -839,7 +843,8 @@ async def process_microphone_audio(
     duration: int = Form(5),
     model: str = Form("whisper"),
     whisper_size: str = Form("large"),
-    decoding: str = Form("ctc")
+    decoding: str = Form("ctc"),
+    lid_model: str = Form("whisper")
 ):
     """
     Process live microphone audio for ASR with automatic language detection
@@ -867,7 +872,8 @@ async def process_microphone_audio(
             duration=duration,
             asr_model=model,
             whisper_size=whisper_size,
-            decoding=decoding
+            decoding=decoding,
+            lid_model=lid_model
         )
         
         if result["success"]:

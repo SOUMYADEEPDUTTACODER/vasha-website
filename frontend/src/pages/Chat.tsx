@@ -15,6 +15,7 @@ import { FileUpload } from "@/components/chat/FileUpload"
 import { LinkInput } from "@/components/chat/LinkInput"
 import { LanguageSelector, languages } from "@/components/chat/LanguageSelector"
 import { ModelSelector } from "@/components/chat/ModelSelector"
+import { LIDModelSelector } from "@/components/chat/LIDModelSelector"
 import { ChatHistory, ChatResponse } from "@/components/chat/ChatHistory"
 import { AudioPlayer } from "@/components/chat/AudioPlayer"
 
@@ -50,6 +51,9 @@ export default function Chat() {
   const [selectedModel, setSelectedModel] = useState<string>("whisper")
   const [selectedWhisperSize, setSelectedWhisperSize] = useState<string>("base")
   const [selectedDecoding, setSelectedDecoding] = useState<string>("ctc")
+  
+  // LID model selection
+  const [selectedLIDModel, setSelectedLIDModel] = useState<string>("whisper")
   
   // Detected language (from ASR response)
   const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null)
@@ -130,7 +134,9 @@ export default function Chat() {
             audioBlob,
             selectedModel,
             selectedWhisperSize,
-            selectedDecoding
+            selectedDecoding,
+            5,
+            selectedLIDModel
           )
         } else if (audioFile) {
           // Process uploaded file
@@ -138,7 +144,8 @@ export default function Chat() {
             audioFile,
             selectedModel,
             selectedWhisperSize,
-            selectedDecoding
+            selectedDecoding,
+            selectedLIDModel
           )
         } else if (mediaLink) {
           // Process YouTube URL
@@ -146,7 +153,8 @@ export default function Chat() {
             mediaLink,
             selectedModel,
             selectedWhisperSize,
-            selectedDecoding
+            selectedDecoding,
+            selectedLIDModel
           )
         } else {
           throw new Error("No media input provided")
@@ -430,6 +438,13 @@ export default function Chat() {
                   onWhisperSizeChange={setSelectedWhisperSize}
                   selectedDecoding={selectedDecoding}
                   onDecodingChange={setSelectedDecoding}
+                />
+              </div>
+              
+              <div className="p-3 bg-background/50 rounded-lg border border-border/40">
+                <LIDModelSelector
+                  selectedLIDModel={selectedLIDModel}
+                  onLIDModelChange={setSelectedLIDModel}
                 />
               </div>
               

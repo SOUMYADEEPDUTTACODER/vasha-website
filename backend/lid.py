@@ -7,7 +7,7 @@ import yt_dlp
 import sounddevice as sd
 from scipy.io.wavfile import write
 import spacy
-from transformers import AutoModel
+from transformers import AutoModel, AutoFeatureExtractor, Wav2Vec2ForSequenceClassification
 
 # Load spaCy English large model for proper noun filtering
 nlp = spacy.load("en_core_web_lg")
@@ -67,6 +67,12 @@ class LanguageIdentifier:
         elif lid_model == "ai4bharat":
             # AI4Bharat does not support LID, fallback to Whisper or raise error
             raise NotImplementedError("AI4Bharat Indic Conformer does not support LID. Use Whisper for LID.")
+        elif lid_model in ("facebook_mms", "mms"):
+            # Load Facebook MMS LID model
+            model_id = "facebook/mms-lid-1024"
+            self.processor = AutoFeatureExtractor.from_pretrained(model_id)
+            self.model = Wav2Vec2ForSequenceClassification.from_pretrained(model_id)
+            self.model.to(self.device)
         else:
             raise ValueError("Unsupported LID model")
 
@@ -127,6 +133,74 @@ class LanguageIdentifier:
             if not filtered_probs:
                 print("⚠️ Could not find any supported language in detected results.")
                 return None, {}
+            detected_lang = max(filtered_probs, key=filtered_probs.get)
+            return detected_lang, filtered_probs
+        elif self.lid_model in ("facebook_mms", "mms"):
+            # Load waveform
+            wav, sr = torchaudio.load(audio_path)
+            # Convert to mono
+            if wav.shape[0] > 1:
+                wav = torch.mean(wav, dim=0, keepdim=True)
+            wav = wav.squeeze().cpu().numpy()
+
+            # Resample to processor expected sample rate if needed
+            target_sr = getattr(self.processor, "sampling_rate", 16000)
+            if sr != target_sr:
+                resampler = torchaudio.transforms.Resample(orig_freq=sr, new_freq=target_sr)
+                wav_tensor = torch.from_numpy(wav).unsqueeze(0)
+                wav_tensor = resampler(wav_tensor)
+                wav = wav_tensor.squeeze().cpu().numpy()
+
+            # Feature extraction / preprocessing
+            try:
+                inputs = self.processor(wav, sampling_rate=target_sr, return_tensors="pt")
+            except TypeError:
+                # Some feature extractors expect a list of arrays
+                inputs = self.processor([wav], sampling_rate=target_sr, return_tensors="pt")
+
+            # Move tensors to device
+            for k, v in list(inputs.items()):
+                if isinstance(v, torch.Tensor):
+                    inputs[k] = v.to(self.device)
+
+            # Forward
+            with torch.no_grad():
+                outputs = self.model(**inputs)
+                logits = outputs.logits[0]
+                probs = torch.softmax(logits, dim=-1).cpu().numpy()
+
+            # Map model labels to TARGET_LANGS keys
+            id2label = getattr(self.model.config, "id2label", {})
+            filtered_probs = {}
+
+            def _label_to_target_code(label):
+                lab = label.lower()
+                # direct match
+                if lab in TARGET_LANGS:
+                    return lab
+                # split on common separators and check parts
+                parts = lab.replace('-', '_').split('_')
+                for p in parts:
+                    if p in TARGET_LANGS:
+                        return p
+                # try first two letters
+                if lab[:2] in TARGET_LANGS:
+                    return lab[:2]
+                return None
+
+            for idx, p in enumerate(probs):
+                label = id2label.get(str(idx), id2label.get(idx, None))
+                if label is None:
+                    continue
+                target_code = _label_to_target_code(str(label))
+                if target_code:
+                    # accumulate if multiple labels map to same code
+                    filtered_probs[target_code] = max(filtered_probs.get(target_code, 0.0), float(p))
+
+            if not filtered_probs:
+                print("⚠️ Could not find any supported language in detected results (MMS).")
+                return None, {}
+
             detected_lang = max(filtered_probs, key=filtered_probs.get)
             return detected_lang, filtered_probs
         else:

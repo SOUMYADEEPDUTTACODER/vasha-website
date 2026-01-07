@@ -73,13 +73,15 @@ class ASRService {
     file: File,
     model: string = 'whisper',
     whisperSize: string = 'base',
-    decoding: string = 'ctc'
+    decoding: string = 'ctc',
+    lidModel: string = 'whisper'
   ): Promise<ASRResponse> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('model', model);
     formData.append('whisper_size', whisperSize);
     formData.append('decoding', decoding);
+    formData.append('lid_model', lidModel);
 
     return this.makeRequest<ASRResponse>('/asr/upload', {
       method: 'POST',
@@ -92,13 +94,15 @@ class ASRService {
     youtubeUrl: string,
     model: string = 'whisper',
     whisperSize: string = 'base',
-    decoding: string = 'ctc'
+    decoding: string = 'ctc',
+    lidModel: string = 'whisper'
   ): Promise<ASRResponse> {
     const formData = new FormData();
     formData.append('youtube_url', youtubeUrl);
     formData.append('model', model);
     formData.append('whisper_size', whisperSize);
     formData.append('decoding', decoding);
+    formData.append('lid_model', lidModel);
 
     return this.makeRequest<ASRResponse>('/asr/youtube', {
       method: 'POST',
@@ -112,12 +116,13 @@ class ASRService {
     model: string = 'whisper',
     whisperSize: string = 'base',
     decoding: string = 'ctc',
-    duration: number = 5
+    duration: number = 5,
+    lidModel: string = 'whisper'
   ): Promise<ASRResponse> {
     // Convert blob to file for upload
     const audioFile = new File([audioBlob], 'recording.webm', { type: 'audio/webm' });
     
-    return this.processFileUpload(audioFile, model, whisperSize, decoding);
+    return this.processFileUpload(audioFile, model, whisperSize, decoding, lidModel);
   }
 
   // Helper method to check if backend is available

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { HistoryIcon, Download, Copy, CheckCheck, ExternalLink } from "lucide-react";
+import { HistoryIcon, Download, Copy, CheckCheck, User } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -75,71 +75,71 @@ export function ChatHistory({ responses }: ChatHistoryProps) {
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md md:max-w-lg">
-        <SheetHeader>
-          <SheetTitle>Response History</SheetTitle>
+        <SheetHeader className="flex items-center justify-between">
+          <div>
+            <SheetTitle>Conversation History</SheetTitle>
+          </div>
+          <div className="text-sm text-muted-foreground">{responses.length} items</div>
         </SheetHeader>
-        
+
         {responses.length === 0 ? (
-          <div className="flex h-[70vh] items-center justify-center text-muted-foreground">
+          <div className="flex h-[60vh] items-center justify-center text-muted-foreground">
             No responses yet
           </div>
         ) : (
-          <ScrollArea className="h-[calc(100vh-8rem)] pr-4">
-            <div className="space-y-6 pt-4">
+          <ScrollArea className="h-[calc(100vh-10rem)] pr-4">
+            <div className="space-y-4 pt-4">
               {responses.map((response) => (
-                <div 
-                  key={response.id} 
-                  className="rounded-lg border border-border/40 overflow-hidden"
-                >
-                  <div className="bg-card/50 p-3 flex justify-between items-center border-b border-border/40">
-                    <div className="text-xs text-muted-foreground">
-                      {response.timestamp.toLocaleString()} • {response.language}
+                <div key={response.id} className="flex flex-col space-y-2">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary-foreground">
+                        <User className="h-5 w-5" />
+                      </div>
                     </div>
-                    <div className="flex space-x-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={() => handleCopyText(response.text, response.id)}
-                      >
-                        {copiedId === response.id ? (
-                          <CheckCheck className="h-3.5 w-3.5 text-green-500" />
-                        ) : (
-                          <Copy className="h-3.5 w-3.5" />
-                        )}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={() => handleDownloadText(response.text, response.id)}
-                      >
-                        <Download className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <Tabs defaultValue="text" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="text">Text</TabsTrigger>
-                      <TabsTrigger value="audio" disabled={!response.audioUrl}>
-                        Audio
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="text" className="p-3">
-                      <div className="text-sm whitespace-pre-wrap max-h-60 overflow-auto">
+
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <div className="text-sm font-medium">Assistant</div>
+                          <div className="text-xs text-muted-foreground">{response.language}</div>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <div className="text-xs text-muted-foreground">{response.timestamp.toLocaleString()}</div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => handleCopyText(response.text, response.id)}
+                          >
+                            {copiedId === response.id ? (
+                              <CheckCheck className="h-3.5 w-3.5 text-green-500" />
+                            ) : (
+                              <Copy className="h-3.5 w-3.5" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => handleDownloadText(response.text, response.id)}
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 bg-card/60 rounded-2xl p-4 shadow-sm text-sm whitespace-pre-wrap">
                         {response.text}
                       </div>
-                    </TabsContent>
-                    <TabsContent value="audio" className="p-3">
+
                       {response.audioUrl && (
-                        <AudioPlayer 
-                          audioUrl={response.audioUrl} 
-                          fileName={`vasha-audio-${response.id.substring(0, 8)}.mp3`}
-                        />
+                        <div className="mt-2">
+                          <AudioPlayer audioUrl={response.audioUrl} fileName={`vasha-audio-${response.id.substring(0, 8)}.mp3`} />
+                        </div>
                       )}
-                    </TabsContent>
-                  </Tabs>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

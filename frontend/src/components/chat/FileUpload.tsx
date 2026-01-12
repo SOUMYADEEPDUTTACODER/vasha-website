@@ -92,7 +92,7 @@ export function FileUpload({ onFileSelected, acceptedTypes = "audio/*,video/*" }
           variant="outline"
           size="icon"
           onClick={handleButtonClick}
-          className="hover:bg-primary/10 transition-colors"
+          className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl hover:scale-105 transform transition"
         >
           <FileUp className="h-4 w-4" />
         </Button>

@@ -57,11 +57,11 @@ export function LinkInput({ onLinkSubmit }: LinkInputProps) {
     <div>
       {!enteredLink ? (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
+            <DialogTrigger asChild>
             <Button
               variant="outline"
               size="icon"
-              className="hover:bg-primary/10 transition-colors"
+              className="bg-gradient-to-r from-emerald-400 to-emerald-600 text-white shadow-2xl hover:scale-105 transform transition"
             >
               <Link2 className="h-4 w-4" />
             </Button>

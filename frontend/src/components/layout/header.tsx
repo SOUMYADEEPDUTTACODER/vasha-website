@@ -28,19 +28,21 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="relative">
-              <video
-                src="/logovid.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="h-12 w-12 object-contain"
-              />
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg group-hover:bg-accent/20 transition-colors duration-300" />
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="relative" style={{ perspective: 900 }}>
+              <div className="relative transform-gpu hover:-translate-y-1 hover:rotate-3 transition-transform duration-300">
+                <video
+                  src="/logovid.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="h-12 w-12 object-contain rounded-full shadow-2xl"
+                />
+                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-white/5 to-black/5 shadow-lg -z-10 transform translate-x-1 translate-y-1" />
+              </div>
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent drop-shadow-md">
               Vasha AI
             </span>
           </Link>
@@ -171,6 +173,11 @@ export function Header() {
           </div>
         )}
       </div>
+
+        {/* Decorative 3D bar under header */}
+        <div className="flex justify-center mt-2">
+          <div className="h-2 w-52 rounded-full bg-gradient-to-r from-primary to-accent shadow-2xl transform rotate-1" />
+        </div>
     </header>
   )
 }

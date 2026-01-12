@@ -99,18 +99,18 @@ export function ModelSelector({
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Cpu className="h-4 w-4" />
+    <div className="flex items-center gap-3 font-sans">
+      <Cpu className="h-4 w-4 text-primary" />
       <div className="flex items-center space-x-2">
         <Select value={selectedModel} onValueChange={onModelChange}>
-          <SelectTrigger className="w-[140px] h-8 text-xs">
+          <SelectTrigger className="w-[160px] h-9 text-sm font-semibold bg-gradient-to-r from-white/5 to-white/3 backdrop-blur-sm rounded-md shadow-lg">
             <SelectValue placeholder="Select model" />
           </SelectTrigger>
           <SelectContent>
             {models.map((model) => (
-              <SelectItem key={model.id} value={model.id} className="text-xs">
+              <SelectItem key={model.id} value={model.id} className="text-sm">
                 <div className="flex flex-col">
-                  <span className="font-medium">{model.name}</span>
+                  <span className="font-semibold">{model.name}</span>
                   <span className="text-xs text-muted-foreground">
                     {model.description}
                   </span>
@@ -122,12 +122,12 @@ export function ModelSelector({
 
         {selectedModel === "whisper" || selectedModel === "faster_whisper" ? (
           <Select value={selectedWhisperSize} onValueChange={onWhisperSizeChange}>
-            <SelectTrigger className="w-[100px] h-8 text-xs">
+            <SelectTrigger className="w-[120px] h-9 text-sm font-semibold bg-gradient-to-r from-white/5 to-white/3 backdrop-blur-sm rounded-md shadow-md">
               <SelectValue placeholder="Size" />
             </SelectTrigger>
             <SelectContent>
               {whisperSizes.map((size) => (
-                <SelectItem key={size.value} value={size.value} className="text-xs">
+                <SelectItem key={size.value} value={size.value} className="text-sm">
                   {size.label}
                 </SelectItem>
               ))}
@@ -137,12 +137,12 @@ export function ModelSelector({
 
         {selectedModel === "ai4bharat" ? (
           <Select value={selectedDecoding} onValueChange={onDecodingChange}>
-            <SelectTrigger className="w-[80px] h-8 text-xs">
+            <SelectTrigger className="w-[100px] h-9 text-sm font-semibold bg-gradient-to-r from-white/5 to-white/3 backdrop-blur-sm rounded-md shadow-md">
               <SelectValue placeholder="Decode" />
             </SelectTrigger>
             <SelectContent>
               {decodingStrategies.map((strategy) => (
-                <SelectItem key={strategy.value} value={strategy.value} className="text-xs">
+                <SelectItem key={strategy.value} value={strategy.value} className="text-sm">
                   {strategy.value.toUpperCase()}
                 </SelectItem>
               ))}

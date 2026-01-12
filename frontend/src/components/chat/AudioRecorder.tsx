@@ -102,7 +102,7 @@ export function AudioRecorder({ onAudioReady }: AudioRecorderProps) {
           onClick={startRecording}
           size="icon"
           variant="outline"
-          className="hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-900/30 transition-colors"
+          className="bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-2xl hover:scale-105 transform transition disabled:opacity-60"
           disabled={isLoading}
         >
           {isLoading ? (

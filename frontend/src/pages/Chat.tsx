@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { Bot, User, Loader2, LinkIcon, Send, AlertCircle } from "lucide-react"
+import { Bot, User, Loader2, LinkIcon, Send, AlertCircle, Copy, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Header } from "@/components/layout/header"
+import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -44,6 +45,7 @@ export default function Chat() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isProcessingASR, setIsProcessingASR] = useState(false)
+  const [asrProgress, setAsrProgress] = useState<number | null>(null)
   const [backendAvailable, setBackendAvailable] = useState<boolean | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   
@@ -123,7 +125,18 @@ export default function Chat() {
         return
       }
 
-      setIsProcessingASR(true)
+          // start progress simulation for ASR
+          setIsProcessingASR(true)
+          setAsrProgress(0)
+          let asrInterval: any = null
+          asrInterval = window.setInterval(() => {
+            setAsrProgress((p) => {
+              if (p === null) return 1
+              // increment slowly until 90%
+              const next = p + Math.floor(Math.random() * 6) + 2
+              return next >= 90 ? 90 : next
+            })
+          }, 300)
       
       try {
         let asrResponse: ASRResponse
@@ -185,10 +198,18 @@ export default function Chat() {
           description: error instanceof Error ? error.message : "Unknown error occurred",
           variant: "destructive",
         })
+        // ensure progress completes on error
+        setAsrProgress(100)
+        setTimeout(() => setAsrProgress(null), 700)
         setIsProcessingASR(false)
         return
       } finally {
-        setIsProcessingASR(false)
+        // complete progress and clear interval
+        setAsrProgress(100)
+        setTimeout(() => setAsrProgress(null), 700)
+        if (asrInterval) clearInterval(asrInterval)
+        // small delay then reset
+        setTimeout(() => setIsProcessingASR(false), 200)
       }
     }
 
@@ -256,6 +277,24 @@ export default function Chat() {
     }
   }
 
+  const handleCopyMessage = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast({ description: "Message copied to clipboard" })
+  }
+
+  const handleDownloadMessage = (text: string, id: string) => {
+    const blob = new Blob([text], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `vasha-message-${id.substring(0, 8)}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast({ description: "Message downloaded" })
+  }
+
   const handleAudioReady = (blob: Blob) => {
     setAudioBlob(blob)
     toast({
@@ -278,7 +317,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-sky-900 text-slate-100">
       <Header />
       <div className="container mx-auto h-[calc(100vh-4rem)] flex flex-col">
         {/* Header */}
@@ -289,7 +328,7 @@ export default function Chat() {
         </div>
 
         {/* Messages */}
-        <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
+        <ScrollArea ref={scrollAreaRef} className="flex-1 p-6">
           <div className="space-y-6 max-w-4xl mx-auto">
             {messages.map((message) => (
               <div
@@ -313,26 +352,43 @@ export default function Chat() {
                       : "bg-card border border-border/40"
                   }`}
                 >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                  </p>
-                  
-                  {message.audioUrl && message.role === "assistant" && (
-                    <div className="mt-3">
-                      <AudioPlayer audioUrl={message.audioUrl} />
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {message.content}
+                      </p>
+
+                      {message.audioUrl && message.role === "assistant" && (
+                        <div className="mt-3">
+                          <AudioPlayer audioUrl={message.audioUrl} />
+                        </div>
+                      )}
                     </div>
-                  )}
-                  
-                  <span className={`text-xs mt-2 block ${
-                    message.role === "user" 
-                      ? "text-primary-foreground/70" 
-                      : "text-muted-foreground"
-                  }`}>
-                    {message.timestamp.toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </span>
+
+                    <div className="flex-shrink-0 flex flex-col items-end space-y-1">
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => handleCopyMessage(message.content)}
+                        >
+                          <Copy className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => handleDownloadMessage(message.content, message.id)}
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                      <span className={`text-xs ${
+                        message.role === "user" ? "text-primary-foreground/70" : "text-muted-foreground"
+                      }`}>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                  </div>
                 </div>
 
                 {message.role === "user" && (
@@ -380,6 +436,37 @@ export default function Chat() {
         {/* Controls */}
         <div className="border-t border-border/40 bg-card/50 backdrop-blur-sm p-4">
           <div className="max-w-4xl mx-auto">
+            {/* Input row */}
+            <div className="flex items-center gap-4 mb-3">
+              <div className="flex-1">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type a message or record/upload audio..."
+                  className="w-full min-h-[56px] max-h-40 resize-y p-3 rounded-lg border border-border/40 bg-background/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                />
+              </div>
+              <div className="flex flex-col items-end space-y-2">
+                <Button
+                  onClick={handleSend}
+                  disabled={(
+                    (!audioBlob && !audioFile && !mediaLink && !input.trim()) || 
+                    isLoading ||
+                    isProcessingASR
+                  )}
+                  className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-[0_12px_30px_rgba(99,102,241,0.18)] hover:scale-105 transform transition-all duration-300 flex items-center space-x-2 px-4 py-2 rounded-xl"
+                >
+                  {isLoading || isProcessingASR ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                  <span className="text-sm">{isProcessingASR ? "Processing..." : "Send"}</span>
+                </Button>
+                <div className="text-xs text-muted-foreground">Press Enter to send</div>
+              </div>
+            </div>
             {/* Post-ASR actions: Play, Download, Continue */}
             {lastTranscription && (
               <div className="mb-4 p-3 bg-background/50 rounded-lg border border-border/40 flex flex-col sm:flex-row items-center gap-3 justify-between">
@@ -411,12 +498,24 @@ export default function Chat() {
               </div>
             )}
             <div className="flex items-center justify-center space-x-4">
-              <div className="flex items-center space-x-2 p-3 bg-background/50 rounded-lg border border-border/40">
+              <div className="flex items-center space-x-2 p-3 bg-gradient-to-br from-white/5 to-white/3 rounded-xl border border-border/30 shadow-2xl transform-gpu hover:-translate-y-1 transition-transform">
+                <div className="pr-2 border-r border-border/20 mr-2">
+                  <span className="text-xs text-muted-foreground">ASR Upload</span>
+                </div>
                 <AudioRecorder onAudioReady={handleAudioReady} />
                 <Separator orientation="vertical" className="h-6" />
                 <FileUpload onFileSelected={handleFileSelected} />
                 <Separator orientation="vertical" className="h-6" />
                 <LinkInput onLinkSubmit={handleLinkSubmit} />
+                {asrProgress !== null && (
+                  <div className="w-64 ml-4">
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="text-muted-foreground">Processing</span>
+                      <span className="font-medium">{Math.min(asrProgress,100)}%</span>
+                    </div>
+                    <Progress value={Math.min(asrProgress,100)} />
+                  </div>
+                )}
               </div>
               
               {/* Language Detection Status */}
@@ -431,21 +530,39 @@ export default function Chat() {
               )}
 
               <div className="p-3 bg-background/50 rounded-lg border border-border/40">
-                <ModelSelector
-                  selectedModel={selectedModel}
-                  onModelChange={setSelectedModel}
-                  selectedWhisperSize={selectedWhisperSize}
-                  onWhisperSizeChange={setSelectedWhisperSize}
-                  selectedDecoding={selectedDecoding}
-                  onDecodingChange={setSelectedDecoding}
-                />
+                <div className="font-medium text-sm tracking-tight">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-muted-foreground">ASR Model</span>
+                      <span className="px-2 py-0.5 text-[11px] rounded-full bg-primary/10 text-primary font-semibold">ASR</span>
+                    </div>
+                    <div className="h-1.5 w-20 rounded-full bg-gradient-to-r from-primary to-accent shadow-md transform rotate-1" />
+                  </div>
+                  <ModelSelector
+                    selectedModel={selectedModel}
+                    onModelChange={setSelectedModel}
+                    selectedWhisperSize={selectedWhisperSize}
+                    onWhisperSizeChange={setSelectedWhisperSize}
+                    selectedDecoding={selectedDecoding}
+                    onDecodingChange={setSelectedDecoding}
+                  />
+                </div>
               </div>
               
               <div className="p-3 bg-background/50 rounded-lg border border-border/40">
-                <LIDModelSelector
-                  selectedLIDModel={selectedLIDModel}
-                  onLIDModelChange={setSelectedLIDModel}
-                />
+                <div className="font-medium text-sm tracking-tight">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-muted-foreground">LID Model</span>
+                      <span className="px-2 py-0.5 text-[11px] rounded-full bg-foreground/5 text-muted-foreground font-semibold">LID</span>
+                    </div>
+                    <div className="h-1.5 w-20 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-md transform -rotate-1" />
+                  </div>
+                  <LIDModelSelector
+                    selectedLIDModel={selectedLIDModel}
+                    onLIDModelChange={setSelectedLIDModel}
+                  />
+                </div>
               </div>
               
               <Button
@@ -455,7 +572,7 @@ export default function Chat() {
                   isLoading ||
                   isProcessingASR
                 )}
-                className="gradient-primary text-primary-foreground hover:shadow-glow transition-all duration-300 flex items-center space-x-2 px-6 py-3"
+                className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-[0_14px_40px_rgba(139,92,246,0.18)] hover:scale-105 transform transition-all duration-300 flex items-center space-x-2 px-6 py-3 rounded-2xl"
               >
                 {isLoading || isProcessingASR ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { Header } from "@/components/layout/header"
+import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { LanguageSelector, languages } from "@/components/chat/LanguageSelector"
 import { ttsService } from "@/services/ttsService"
@@ -21,12 +22,22 @@ export default function TTS() {
   const [loading, setLoading] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [ttsProgress, setTtsProgress] = useState<number | null>(null)
 
   const handleGenerateSpeech = async () => {
     if (!text) return
     setLoading(true)
     setError(null)
     setAudioUrl(null)
+    setTtsProgress(0)
+    let ttsInterval: any = null
+    ttsInterval = window.setInterval(() => {
+      setTtsProgress((p) => {
+        if (p === null) return 1
+        const next = p + Math.floor(Math.random() * 8) + 2
+        return next >= 90 ? 90 : next
+      })
+    }, 300)
     
     try {
       const res = await ttsService.generateSpeech(text, selectedLang, selectedModel)
@@ -35,6 +46,9 @@ export default function TTS() {
     } catch (e: any) {
       setError(e?.message || 'TTS generation failed')
     } finally {
+      setTtsProgress(100)
+      setTimeout(() => setTtsProgress(null), 700)
+      if (ttsInterval) clearInterval(ttsInterval)
       setLoading(false)
     }
   }
@@ -53,7 +67,7 @@ export default function TTS() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-sky-900 text-slate-100">
       <Header />
       <div className="container mx-auto p-6 max-w-3xl">
         <h1 className="text-2xl font-semibold mb-4">Text-to-Speech</h1>
@@ -65,63 +79,40 @@ export default function TTS() {
                 <p className="whitespace-pre-wrap leading-relaxed text-sm text-muted-foreground">{srcText}</p>
               </div>
             )}
-            <div className="p-4 rounded-lg border border-border/40 bg-card">
+            <div className="p-4 rounded-lg border border-border/40 bg-card/60 backdrop-blur-sm">
               <div className="text-sm text-muted-foreground mb-2">Text to Convert ({langCode || 'unknown'}):</div>
               <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
             </div>
             
-            <div className="p-4 rounded-lg border border-border/40 bg-card flex flex-col gap-4">
+            <div className="p-4 rounded-lg border border-border/40 bg-card/60 flex flex-col gap-4 backdrop-blur-sm">
               <div className="flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">Language:</span>
                   <LanguageSelector selectedLanguage={selectedLang} onLanguageChange={setSelectedLang} />
                 </div>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <label className="text-sm">TTS Model:</label>
-                  <label className="text-sm flex items-center gap-1 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="tts-model" 
-                      checked={selectedModel === 'auto'} 
-                      onChange={() => setSelectedModel('auto')} 
-                    />
-                    Auto
-                  </label>
-                  <label className="text-sm flex items-center gap-1 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="tts-model" 
-                      checked={selectedModel === 'xtts'} 
-                      onChange={() => setSelectedModel('xtts')} 
-                    />
-                    Coqui TTS (XTTS)
-                  </label>
-                  <label className="text-sm flex items-center gap-1 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="tts-model" 
-                      checked={selectedModel === 'gtts'} 
-                      onChange={() => setSelectedModel('gtts')} 
-                    />
-                    Google TTS
-                  </label>
-                  <label className="text-sm flex items-center gap-1 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="tts-model" 
-                      checked={selectedModel === 'indic'} 
-                      onChange={() => setSelectedModel('indic')} 
-                    />
-                    Indic TTS
-                  </label>
+                  <span className="text-sm text-muted-foreground mr-2">TTS Model:</span>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setSelectedModel('auto')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='auto' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Auto</button>
+                    <button onClick={() => setSelectedModel('xtts')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='xtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Coqui TTS</button>
+                    <button onClick={() => setSelectedModel('gtts')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='gtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Google TTS</button>
+                    <button onClick={() => setSelectedModel('indic')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='indic' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Indic TTS</button>
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button onClick={handleGenerateSpeech} disabled={loading}>
-                  {loading ? 'Generating Speech...' : 'Generate Speech'}
-                </Button>
-                <Button variant="outline" onClick={() => navigate(-1)}>Back</Button>
+                <Button onClick={handleGenerateSpeech} disabled={loading} className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-[0_14px_40px_rgba(139,92,246,0.18)] hover:scale-105 transform transition-all duration-300">{loading ? 'Generating Speech...' : 'Generate Speech'}</Button>
+                <Button variant="outline" onClick={() => navigate(-1)} className="text-slate-100 border-border/40">Back</Button>
               </div>
+              {ttsProgress !== null && (
+                <div className="mt-3 w-full">
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="text-muted-foreground">TTS progress</span>
+                    <span className="font-medium">{Math.min(ttsProgress,100)}%</span>
+                  </div>
+                  <Progress value={Math.min(ttsProgress,100)} />
+                </div>
+              )}
               {error && <div className="text-sm text-red-500">{error}</div>}
             </div>
             
@@ -134,7 +125,7 @@ export default function TTS() {
                       size="sm" 
                       variant="outline" 
                       onClick={handleDownload}
-                      className="flex items-center gap-1"
+                      className="flex items-center gap-1 text-slate-100 border-border/40 bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl"
                     >
                       <Download className="h-4 w-4" />
                       Download

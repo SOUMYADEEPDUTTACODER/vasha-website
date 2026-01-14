@@ -7,55 +7,62 @@ export default function UserDocs() {
   const guides = [
     {
       icon: MessageCircle,
-      title: "Getting Started with Chat",
-      description: "Learn how to effectively communicate with Vasha AI",
+      title: "How to Use Vasha AI",
+      description: "Step-by-step guide to using speech, translation, and voice features",
       content: [
-        "Start a conversation with clear, specific questions",
-        "Use natural language - no special syntax required",
-        "Break complex requests into smaller parts",
-        "Provide context for better responses"
+        "Upload an audio file or provide a YouTube link",
+        "Choose the ASR model (Whisper or AI4Bharat)",
+        "Select a target language for translation",
+        "Choose your preferred TTS engine",
+        "Generate translated speech output"
       ]
     },
     {
       icon: Sparkles,
-      title: "Best Practices",
-      description: "Tips to get the most out of Vasha AI",
+      title: "Model Selection Guide",
+      description: "Choosing the best model for your language and use case",
       content: [
-        "Be specific about what you need",
-        "Ask follow-up questions for clarification",
-        "Use examples to illustrate your requests",
-        "Iterate and refine your prompts"
+        "Whisper works best for global languages",
+        "AI4Bharat ASR is optimized for Indian languages",
+        "XTTS provides voice cloning and multilingual speech",
+        "Indic TTS is recommended for Indian languages",
+        "gTTS acts as a fallback for unsupported languages"
       ]
     },
     {
       icon: Shield,
-      title: "Privacy & Safety",
-      description: "How we protect your data and ensure safe interactions",
+      title: "Privacy & Data Handling",
+      description: "How audio and text data are processed",
       content: [
-        "Conversations are encrypted in transit",
-        "No personal data stored permanently",
-        "Content filtering for safety",
-        "Report inappropriate responses"
+        "Audio is processed only for inference",
+        "No audio is stored after processing",
+        "All processing happens securely on the server",
+        "Evaluation data is anonymized",
+        "No personal identity tracking"
       ]
     }
   ]
 
   const faqs = [
     {
-      question: "How accurate are Vasha AI's responses?",
-      answer: "Vasha AI provides highly accurate responses based on its training data. However, always verify important information from authoritative sources."
+      question: "Which languages are supported?",
+      answer:
+        "Vasha AI supports global languages via Whisper and XTTS, and Indian languages via AI4Bharat ASR, IndicTrans MT, and Indic TTS. Supported languages include Hindi, Bengali, Tamil, Assamese, English, French, German, Japanese, Chinese, and more."
     },
     {
-      question: "Can I use Vasha AI for commercial purposes?",
-      answer: "Yes, Vasha AI can be used for commercial applications. Check our pricing page for enterprise plans and API access."
+      question: "Which ASR model should I use?",
+      answer:
+        "Use Whisper for global or mixed-language audio. Use AI4Bharat ASR for Indian languages such as Hindi, Bengali, Tamil, Assamese, and Marathi."
     },
     {
-      question: "What languages does Vasha AI support?",
-      answer: "Vasha AI supports multiple languages including English, Spanish, French, German, Chinese, Japanese, and many more."
+      question: "What TTS model gives the best quality?",
+      answer:
+        "XTTS provides high-quality multilingual speech and voice cloning. Indic TTS provides more natural output for Indian languages. gTTS is used as a fallback when other models are unavailable."
     },
     {
-      question: "Is there a limit to conversation length?",
-      answer: "Free users have a daily message limit. Premium users enjoy unlimited conversations with priority response times."
+      question: "Can I use my own voice?",
+      answer:
+        "Yes. XTTS supports voice cloning using a short reference WAV file recorded in your own voice."
     }
   ]
 
@@ -70,86 +77,64 @@ export default function UserDocs() {
               <span>Back to Home</span>
             </Link>
           </Button>
-          
+
           <div className="flex items-center space-x-3 mb-4">
             <div className="h-12 w-12 gradient-primary rounded-lg flex items-center justify-center">
               <Book className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold">User Documentation</h1>
+              <h1 className="text-4xl font-bold">User Manual</h1>
               <p className="text-xl text-muted-foreground mt-2">
-                Everything you need to know about using Vasha AI effectively
+                Complete guide to using Vasha AI’s Speech, Translation, and Voice system
               </p>
             </div>
           </div>
         </div>
 
-        {/* Getting Started */}
+        {/* Overview */}
         <Card className="mb-8 shadow-card border-border/40">
           <CardHeader>
-            <CardTitle>Welcome to Vasha AI</CardTitle>
+            <CardTitle>About Vasha AI</CardTitle>
             <CardDescription>
-              Vasha AI is your intelligent conversation partner, ready to help with a wide range of tasks
+              End-to-end Speech → Translation → Speech pipeline
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
-                <h3 className="font-semibold mb-3 text-primary">What can Vasha AI help with?</h3>
+                <h3 className="font-semibold mb-3 text-primary">Core Capabilities</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-primary rounded-full" />
-                    <span>Answer questions and provide explanations</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-primary rounded-full" />
-                    <span>Help with writing and editing</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-primary rounded-full" />
-                    <span>Assist with analysis and research</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-primary rounded-full" />
-                    <span>Creative projects and brainstorming</span>
-                  </li>
+                  <li>Automatic Speech Recognition (ASR)</li>
+                  <li>Multilingual Machine Translation (MT)</li>
+                  <li>Text-to-Speech with voice cloning (TTS)</li>
+                  <li>Support for Indian and global languages</li>
                 </ul>
               </div>
               <div>
-                <h3 className="font-semibold mb-3 text-primary">Quick Start Tips</h3>
+                <h3 className="font-semibold mb-3 text-primary">Supported Models</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-accent rounded-full" />
-                    <span>Start with "Hello" to begin a conversation</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-accent rounded-full" />
-                    <span>Ask specific questions for better answers</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-accent rounded-full" />
-                    <span>Feel free to ask for clarification</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="h-1.5 w-1.5 bg-accent rounded-full" />
-                    <span>Try different conversation styles</span>
-                  </li>
+                  <li>ASR: Whisper, AI4Bharat Conformer</li>
+                  <li>MT: IndicTrans2, Google Translate</li>
+                  <li>TTS: XTTS, Indic Parler-TTS, gTTS</li>
                 </ul>
               </div>
             </div>
-            
+
             <div className="mt-6">
               <Button asChild className="gradient-primary text-primary-foreground">
-                <Link to="/chat">Start Chatting Now</Link>
+                <Link to="/chat">Start Using Vasha AI</Link>
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Guides Grid */}
+        {/* Guides */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {guides.map((guide, index) => (
-            <Card key={index} className="shadow-card border-border/40 hover:shadow-glow transition-shadow duration-300">
+            <Card
+              key={index}
+              className="shadow-card border-border/40 hover:shadow-glow transition-shadow duration-300"
+            >
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <guide.icon className="h-5 w-5 text-primary" />
@@ -160,7 +145,10 @@ export default function UserDocs() {
               <CardContent>
                 <ul className="space-y-2">
                   {guide.content.map((item, itemIndex) => (
-                    <li key={itemIndex} className="text-sm text-muted-foreground flex items-center space-x-2">
+                    <li
+                      key={itemIndex}
+                      className="text-sm text-muted-foreground flex items-center space-x-2"
+                    >
                       <div className="h-1.5 w-1.5 bg-primary rounded-full" />
                       <span>{item}</span>
                     </li>
@@ -171,32 +159,39 @@ export default function UserDocs() {
           ))}
         </div>
 
-        {/* FAQ Section */}
+        {/* FAQ */}
         <Card className="shadow-card border-border/40">
           <CardHeader>
             <CardTitle>Frequently Asked Questions</CardTitle>
             <CardDescription>
-              Common questions about using Vasha AI
+              Common questions about models, languages, and usage
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {faqs.map((faq, index) => (
-                <div key={index} className="border-b border-border/40 last:border-b-0 pb-4 last:pb-0">
-                  <h3 className="font-semibold text-foreground mb-2">{faq.question}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{faq.answer}</p>
+                <div
+                  key={index}
+                  className="border-b border-border/40 last:border-b-0 pb-4 last:pb-0"
+                >
+                  <h3 className="font-semibold text-foreground mb-2">
+                    {faq.question}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {faq.answer}
+                  </p>
                 </div>
               ))}
             </div>
-            
+
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Button variant="outline" className="flex items-center space-x-2 hover:shadow-card transition-shadow duration-300">
+              <Button variant="outline" className="flex items-center space-x-2">
                 <ExternalLink className="h-4 w-4" />
-                <span>Contact Support</span>
+                <span>Developer Docs</span>
               </Button>
-              <Button variant="outline" className="flex items-center space-x-2 hover:shadow-card transition-shadow duration-300">
+              <Button variant="outline" className="flex items-center space-x-2">
                 <MessageCircle className="h-4 w-4" />
-                <span>Community Forum</span>
+                <span>Community Support</span>
               </Button>
             </div>
           </CardContent>

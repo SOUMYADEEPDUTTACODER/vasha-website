@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "@/components/ui/use-toast"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
+import { API_BASE_URL } from "@/config/api"
 
 interface LoginFormProps {
   onClose?: () => void
@@ -27,7 +28,7 @@ export function LoginForm({ onClose, onSignupClick, onForgotClick }: LoginFormPr
     setIsLoading(true)
 
     try {
-      const res = await fetch("http://localhost:8000/login", {
+      const res = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

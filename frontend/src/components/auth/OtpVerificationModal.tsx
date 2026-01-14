@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "@/config/api";
 
 interface OtpVerificationModalProps {
   open: boolean;
@@ -47,7 +48,7 @@ export function OtpVerificationModal({ open, onOpenChange, userData }: OtpVerifi
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/complete-signup", {
+      const response = await fetch(`${API_BASE_URL}/complete-signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -88,7 +89,7 @@ export function OtpVerificationModal({ open, onOpenChange, userData }: OtpVerifi
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/resend-email-otp", {
+      const response = await fetch(`${API_BASE_URL}/resend-email-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: userData.email }),

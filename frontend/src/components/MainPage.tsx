@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "@/config/api";
 
 export function MainPage() {
   const [username, setUsername] = useState("");
@@ -6,7 +7,7 @@ export function MainPage() {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      fetch("http://localhost:8000/me", {
+      fetch(`${API_BASE_URL}/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => res.json())

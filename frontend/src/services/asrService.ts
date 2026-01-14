@@ -1,5 +1,5 @@
 // ASR Service for connecting frontend to backend
-const API_BASE_URL = 'http://localhost:8000';
+import { API_BASE_URL } from '@/config/api';
 
 export interface ASRResponse {
   success: boolean;

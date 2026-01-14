@@ -24,10 +24,21 @@ load_dotenv()
 
 app = FastAPI()
 
+# CORS configuration - allows environment variable for frontend URL
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+ALLOWED_ORIGINS = [
+    FRONTEND_URL,
+    "http://localhost:5173",  # Local development
+]
+
+# If FRONTEND_URL contains comma-separated URLs, split them
+if "," in FRONTEND_URL:
+    ALLOWED_ORIGINS = FRONTEND_URL.split(",") + ["http://localhost:5173"]
+
 # Allow frontend requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to your frontend origin in production
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

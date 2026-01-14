@@ -10,6 +10,7 @@ import { PhoneMfaModal } from "@/components/auth/PhoneMfaModal"
 import { OtpVerificationModal } from "@/components/auth/OtpVerificationModal"
 
 import { CaptchaField } from "@/components/auth/CaptchaField"
+import { API_BASE_URL } from "@/config/api"
 
 interface SignupFormProps {
   onClose?: () => void
@@ -49,7 +50,7 @@ export function SignupForm({ onClose }: SignupFormProps) {
     setIsLoading(true)
 
     try {
-      const res = await fetch("http://localhost:8000/signup", {
+      const res = await fetch(`${API_BASE_URL}/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

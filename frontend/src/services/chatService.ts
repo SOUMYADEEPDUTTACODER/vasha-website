@@ -1,7 +1,9 @@
+import { API_BASE_URL } from '@/config/api';
+
 export const chatService = {
   async getChats(limit = 50) {
     const token = localStorage.getItem("access_token")
-    const res = await fetch(`http://localhost:8000/chats?limit=${limit}`, {
+    const res = await fetch(`${API_BASE_URL}/chats?limit=${limit}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
     if (!res.ok) {
@@ -13,7 +15,7 @@ export const chatService = {
 
   async saveChat(text: string) {
     const token = localStorage.getItem("access_token")
-    const res = await fetch("http://localhost:8000/chats", {
+    const res = await fetch(`${API_BASE_URL}/chats`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

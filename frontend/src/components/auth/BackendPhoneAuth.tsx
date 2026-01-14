@@ -6,6 +6,7 @@ import { Label } from '../ui/label';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Loader2, Phone, Shield, CheckCircle } from 'lucide-react';
 import { toast } from '../ui/use-toast';
+import { API_BASE_URL } from '@/config/api';
 
 interface BackendPhoneAuthProps {
   onVerificationComplete: (phoneNumber: string) => void;
@@ -46,7 +47,7 @@ export const BackendPhoneAuth: React.FC<BackendPhoneAuthProps> = ({
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/send-otp', {
+      const response = await fetch(`${API_BASE_URL}/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ export const BackendPhoneAuth: React.FC<BackendPhoneAuthProps> = ({
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/verify-otp', {
+      const response = await fetch(`${API_BASE_URL}/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

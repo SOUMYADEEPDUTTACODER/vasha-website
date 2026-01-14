@@ -8,6 +8,7 @@ import {
   PhoneMultiFactorGenerator,
   getAuth,
 } from "firebase/auth";
+import { API_BASE_URL } from "@/config/api";
 
 interface AuthContextType {
   username: string | null;
@@ -38,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      fetch("http://localhost:8000/me", {
+      fetch(`${API_BASE_URL}/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => (res.ok ? res.json() : null))

@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# Documentation
+*.md
+!README.md
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Git
+.git/
+.gitignore
+
+# Output directories (created at runtime)
+tts_output/*
+!tts_output/.gitkeep
+chunks/*
+!chunks/.gitkeep
+
+# Temp files
+temp_audio/
+*.tmp
+*.temp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test files (optional - comment out if you want to include them)
+test_*.py

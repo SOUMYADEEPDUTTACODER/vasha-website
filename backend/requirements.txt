@@ -11,7 +11,7 @@ twilio
 # ASR Dependencies
 torch
 torchaudio
-whisper
+openai-whisper
 faster-whisper
 transformers
 spacy
@@ -31,4 +31,4 @@ gTTS
 pydub
 soundfile
 parler-tts
-numpy
+numpy<2.0  # Pin to <2.0 for pyworld compatibility

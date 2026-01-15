@@ -44,12 +44,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = MongoClient("mongodb://localhost:27017/")
+# MongoDB connection - use environment variable or default to localhost
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/")
+client = MongoClient(MONGODB_URI)
 db = client["vasha"]
 users = db["users"]
 chats = db["chats"]
-
-MONGODB_URI = os.getenv("MONGODB_URI")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60

@@ -48,3 +48,9 @@ htmlcov/
 # Backend artifacts and outputs
 backend/tts_output/
 backend/chunks/
+
+# Diagrams and screenshots - KEEP TRACKED
+# diagrams/ directory should be committed to show website screenshots in README
+# Uncomment below if you want to ignore specific diagram files:
+# diagrams/*.tmp
+# diagrams/*.bak

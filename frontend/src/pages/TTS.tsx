@@ -130,6 +130,13 @@ export default function TTS() {
                       <Download className="h-4 w-4" />
                       Download
                     </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate('/chat')}
+                      className="flex items-center gap-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg hover:scale-[1.02] transform transition-all duration-200"
+                    >
+                      New Chat
+                    </Button>
                   </div>
                 </div>
                 <AudioPlayer audioUrl={audioUrl} />

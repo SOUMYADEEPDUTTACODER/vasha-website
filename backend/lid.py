@@ -7,7 +7,11 @@ import yt_dlp
 import sounddevice as sd
 from scipy.io.wavfile import write
 import spacy
-from transformers import AutoModel, AutoFeatureExtractor, Wav2Vec2ForSequenceClassification
+from transformers import (
+    AutoModel,
+    AutoFeatureExtractor,
+    Wav2Vec2ForSequenceClassification,
+)
 
 # Load spaCy English large model for proper noun filtering
 nlp = spacy.load("en_core_web_lg")
@@ -68,11 +72,12 @@ class LanguageIdentifier:
             # AI4Bharat does not support LID, fallback to Whisper or raise error
             raise NotImplementedError("AI4Bharat Indic Conformer does not support LID. Use Whisper for LID.")
         elif lid_model in ("facebook_mms", "mms"):
-            # Load Facebook MMS LID model
+            # Load Facebook MMS LID model (classification head)
             model_id = "facebook/mms-lid-1024"
             self.processor = AutoFeatureExtractor.from_pretrained(model_id)
             self.model = Wav2Vec2ForSequenceClassification.from_pretrained(model_id)
             self.model.to(self.device)
+        # Note: facebook/mms-1b-all support removed — keep Whisper and facebook/mms-lid-1024
         else:
             raise ValueError("Unsupported LID model")
 
@@ -203,6 +208,7 @@ class LanguageIdentifier:
 
             detected_lang = max(filtered_probs, key=filtered_probs.get)
             return detected_lang, filtered_probs
+        # MMS-1B support removed; only Whisper and Facebook MMS (mms-lid-1024) are supported
         else:
             raise ValueError("Unsupported LID model")
 

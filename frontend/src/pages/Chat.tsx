@@ -355,8 +355,31 @@ export default function Chat() {
       <div className="container mx-auto h-[calc(100vh-4rem)] flex flex-col">
         {/* Header */}
         <div className="border-b border-border/40 bg-card/50 backdrop-blur-sm">
-          <div className="flex items-center justify-end p-4">
-            <ChatHistory responses={responses} />
+          <div className="flex items-center justify-end p-4 space-x-3">
+            <div className="flex flex-col items-end space-y-2">
+              <ChatHistory responses={responses} />
+              <button
+                onClick={() => {
+                  // Reset chat state and navigate to chat (refresh view)
+                  setMessages([
+                    {
+                      id: "1",
+                      content: "Hello! I'm Vasha AI. How can I help you today?",
+                      role: "assistant",
+                      timestamp: new Date(),
+                    },
+                  ])
+                  setResponses([])
+                  setDetectedLanguage(null)
+                  setLastRecordingUrl(null)
+                  setLastTranscription(null)
+                  navigate('/chat')
+                }}
+                className="px-3 py-2 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:scale-[1.02] transform transition-all duration-200"
+              >
+                New Chat
+              </button>
+            </div>
           </div>
         </div>
 

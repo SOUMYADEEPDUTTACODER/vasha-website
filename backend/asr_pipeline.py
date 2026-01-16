@@ -18,6 +18,9 @@ from lid import (
     TARGET_LANGS
 )
 
+# Cache Whisper models to avoid reloading (saves GPU memory)
+_whisper_model_cache = {}
+
 # Load spaCy English model (used for proper-noun highlighting)
 nlp = spacy.load("en_core_web_lg")
 
@@ -54,14 +57,47 @@ def get_proper_nouns(text):
 
 def transcribe_whisper(audio_path, language_code=None, model_size="large"):
     print("\n🔠 Running Whisper ASR...")
-    model = whisper.load_model(model_size)
+    # Clear GPU cache before loading model to reduce fragmentation
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    
+    # Use cached model if available, otherwise load and cache it
+    if model_size not in _whisper_model_cache:
+        print(f"📥 Loading Whisper {model_size} model (first time)...")
+        _whisper_model_cache[model_size] = whisper.load_model(model_size)
+    else:
+        print(f"♻️ Using cached Whisper {model_size} model")
+    
+    model = _whisper_model_cache[model_size]
     result = model.transcribe(audio_path, language=language_code)
+    
+    # Clear cache after transcription to free up memory
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    
     return result['text']
 
 def transcribe_fasterwhisper(audio_path, language_code=None, model_size="large-v2"):
     print("\n⚡ Running Faster-Whisper ASR...")
-    model = faster_whisper.WhisperModel(model_size, device="cuda" if torch.cuda.is_available() else "cpu")
-    segments, _ = model.transcribe(audio_path, language=language_code)
+    # Prefer CUDA but gracefully fallback to CPU if CUDA libraries (cuBLAS) are missing
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    try:
+        model = faster_whisper.WhisperModel(model_size, device=device)
+        segments, _ = model.transcribe(audio_path, language=language_code)
+    except Exception as e:
+        err = str(e).lower()
+        # Common Windows DLL missing error contains 'cublas' or 'cublas64'
+        if "cublas" in err or "cublas64" in err or isinstance(e, OSError):
+            print(f"⚠️ CUDA/cuBLAS not available ({e}). Falling back to CPU (slower)...")
+            try:
+                model = faster_whisper.WhisperModel(model_size, device="cpu")
+                segments, _ = model.transcribe(audio_path, language=language_code)
+            except Exception as e2:
+                print(f"❌ Faster-Whisper CPU fallback also failed: {e2}")
+                raise
+        else:
+            # Unknown error - re-raise
+            raise
     return " ".join([seg.text for seg in segments])
 
 def transcribe_ai4bharat(audio_path, language_code, decoding_strategy="ctc"):

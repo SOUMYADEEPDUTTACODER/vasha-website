@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Request, UploadFile, File, Form
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from pymongo import MongoClient
+import pymongo
 from bson import ObjectId
 from passlib.context import CryptContext
 from jose import JWTError, jwt
@@ -28,12 +30,19 @@ app = FastAPI()
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 ALLOWED_ORIGINS = [
     FRONTEND_URL,
-    "http://localhost:5173",  # Local development
+    "http://localhost:5173",  # Local development (default Vite port)
+    "http://localhost:5174",  # Local development (fallback Vite port)
 ]
 
 # If FRONTEND_URL contains comma-separated URLs, split them
 if "," in FRONTEND_URL:
-    ALLOWED_ORIGINS = FRONTEND_URL.split(",") + ["http://localhost:5173"]
+    ALLOWED_ORIGINS = FRONTEND_URL.split(",") + ["http://localhost:5173", "http://localhost:5174"]
+
+# Ensure backend Swagger/UI origins are allowed so docs can call the API
+if "http://localhost:8000" not in ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS.append("http://localhost:8000")
+if "http://127.0.0.1:8000" not in ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS.append("http://127.0.0.1:8000")
 
 # Allow frontend requests
 app.add_middleware(
@@ -69,7 +78,11 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 def get_user(username: str):
-    return users.find_one({"username": username})
+    try:
+        return users.find_one({"username": username})
+    except pymongo.errors.PyMongoError as e:
+        print(f"❌ MongoDB error in get_user(): {e}")
+        return None
 
 def authenticate_user(username: str, password: str):
     user = get_user(username)
@@ -79,35 +92,42 @@ def authenticate_user(username: str, password: str):
 
 @app.post("/signup")
 async def signup(data: dict, background_tasks: BackgroundTasks):
-    if get_user(data["username"]):
-        raise HTTPException(status_code=400, detail="Username already exists")
-    
-    # Check if email already exists
-    existing_user = users.find_one({"email": data["email"]})
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    # Phone is optional now, so only check if provided
-    phone = data.get("phone", "")
-    if phone:
-        existing_phone = users.find_one({"phone": phone})
-        if existing_phone:
-            raise HTTPException(status_code=400, detail="Phone number already registered")
-    
-    hashed_password = get_password_hash(data["password"])
-    user = {
-        "username": data["username"],
-        "email": data["email"],
-        "phone": phone,
-        "password": hashed_password,
-        "email_verified": False,
-        "phone_verified": False,
-        "created_at": datetime.utcnow()
-    }
-    
-    # Insert user with verification status
-    result = users.insert_one(user)
-    user["_id"] = result.inserted_id
+    try:
+        if get_user(data["username"]):
+            raise HTTPException(status_code=400, detail="Username already exists")
+        
+        # Check if email already exists
+        existing_user = users.find_one({"email": data["email"]})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        # Phone is optional now, so only check if provided
+        phone = data.get("phone", "")
+        if phone:
+            existing_phone = users.find_one({"phone": phone})
+            if existing_phone:
+                raise HTTPException(status_code=400, detail="Phone number already registered")
+        
+        hashed_password = get_password_hash(data["password"])
+        user = {
+            "username": data["username"],
+            "email": data["email"],
+            "phone": phone,
+            "password": hashed_password,
+            "email_verified": False,
+            "phone_verified": False,
+            "created_at": datetime.utcnow()
+        }
+        
+        # Insert user with verification status
+        result = users.insert_one(user)
+        user["_id"] = result.inserted_id
+    except pymongo.errors.ServerSelectionTimeoutError as e:
+        print(f"❌ MongoDB connection error during signup: {e}")
+        raise HTTPException(status_code=503, detail="Database unavailable. Please try again later.")
+    except pymongo.errors.PyMongoError as e:
+        print(f"❌ MongoDB error during signup: {e}")
+        raise HTTPException(status_code=500, detail="Database error during signup")
 
     # Generate and send email verification OTP
     try:
@@ -769,6 +789,36 @@ async def get_supported_languages():
         "languages": TARGET_LANGS,
         "message": "Supported languages retrieved successfully"
     }
+
+
+class MTRequest(BaseModel):
+    text: str
+    src_lang: str = "en"
+    tgt_lang: str = "hi"
+    # primary can be 'indictrans', 'nllb', or 'google'
+    primary: str = "indictrans"
+
+
+@app.post("/mt/indictrans")
+async def mt_indictrans(payload: MTRequest):
+    """Translate text using IndicTrans (visible in Swagger at /docs).
+
+    Example request body:
+    {
+      "text": "Hello world",
+      "src_lang": "en",
+      "tgt_lang": "hi",
+      "primary": "indictrans"
+    }
+    """
+    if not payload.text or not payload.text.strip():
+        raise HTTPException(status_code=400, detail="'text' is required")
+
+    try:
+        translated, used = translate_with_fallback(payload.text, payload.src_lang, payload.tgt_lang, primary=payload.primary)
+        return {"success": True, "translation": translated, "model_used": used}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"MT failed: {e}")
 
 @app.post("/asr/upload")
 async def process_audio_upload(

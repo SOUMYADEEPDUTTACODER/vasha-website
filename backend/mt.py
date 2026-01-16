@@ -157,6 +157,10 @@ def translate_google(texts: List[str], src_lang: str, tgt_lang: str) -> List[str
 _nllb_tokenizer = None
 _nllb_model = None
 
+# Cache for IndicTrans models (avoid reloading on every request)
+_indic_tokenizers = {}
+_indic_models = {}
+
 def _load_nllb_model():
     """Lazy load NLLB model and tokenizer."""
     global _nllb_tokenizer, _nllb_model
@@ -291,27 +295,42 @@ def translate_indictrans(texts: List[str], src_lang: str, tgt_lang: str) -> List
     src_lang = normalize_code_for_indictrans(src_lang)
     tgt_lang = normalize_code_for_indictrans(tgt_lang)
     model_name = detect_model(src_lang, tgt_lang)
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    model = AutoModelForSeq2SeqLM.from_pretrained(
-        model_name,
-        trust_remote_code=True,
-        torch_dtype=torch.float16 if DEVICE == "cuda" else torch.float32,
-    ).to(DEVICE)
+    # Lazy-load and cache the tokenizer/model for this model_name
+    global _indic_tokenizers, _indic_models
+    if model_name not in _indic_tokenizers or model_name not in _indic_models:
+        try:
+            _indic_tokenizers[model_name] = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+            _indic_models[model_name] = AutoModelForSeq2SeqLM.from_pretrained(
+                model_name,
+                trust_remote_code=True,
+                torch_dtype=torch.float16 if DEVICE == "cuda" else torch.float32,
+            ).to(DEVICE)
+        except Exception as e:
+            print(f"⚠️ Failed to load IndicTrans model {model_name}: {e}")
+            raise
 
-    if HAS_INDIC_PROCESSOR:
-        ip = IndicProcessor(inference=True)
-        batch = ip.preprocess_batch(texts, src_lang=src_lang, tgt_lang=tgt_lang)
-        inputs = tokenizer(batch, truncation=True, padding="longest", return_tensors="pt", return_attention_mask=True).to(DEVICE)
-        with torch.no_grad():
-            outputs = model.generate(**inputs, use_cache=True, min_length=0, max_length=1024, num_beams=5, num_return_sequences=1)
-        decoded = tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=True)
-        translations = ip.postprocess_batch(decoded, lang=tgt_lang)
-    else:
-        tagged = [f"<{src_lang}><{tgt_lang}> {s}" for s in texts]
-        inputs = tokenizer(tagged, truncation=True, padding=True, return_tensors="pt").to(DEVICE)
-        with torch.no_grad():
-            outputs = model.generate(**inputs, max_length=1024, num_beams=5, use_cache=True)
-        translations = tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=True)
+    tokenizer = _indic_tokenizers[model_name]
+    model = _indic_models[model_name]
+
+    try:
+        if HAS_INDIC_PROCESSOR:
+            ip = IndicProcessor(inference=True)
+            batch = ip.preprocess_batch(texts, src_lang=src_lang, tgt_lang=tgt_lang)
+            inputs = tokenizer(batch, truncation=True, padding="longest", return_tensors="pt", return_attention_mask=True).to(DEVICE)
+            with torch.no_grad():
+                # Use slightly faster generation defaults to reduce latency
+                outputs = model.generate(**inputs, use_cache=True, min_length=0, max_length=512, num_beams=3, num_return_sequences=1)
+            decoded = tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=True)
+            translations = ip.postprocess_batch(decoded, lang=tgt_lang)
+        else:
+            tagged = [f"<{src_lang}><{tgt_lang}> {s}" for s in texts]
+            inputs = tokenizer(tagged, truncation=True, padding=True, return_tensors="pt").to(DEVICE)
+            with torch.no_grad():
+                outputs = model.generate(**inputs, max_length=512, num_beams=3, use_cache=True)
+            translations = tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=True)
+    except Exception as e:
+        print(f"⚠️ IndicTrans generation error for model {model_name}: {e}")
+        raise
     return translations
 
 

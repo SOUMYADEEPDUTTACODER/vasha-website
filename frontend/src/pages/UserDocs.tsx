@@ -94,7 +94,7 @@ export default function UserDocs() {
         {/* Overview */}
         <Card className="mb-8 shadow-card border-border/40">
           <CardHeader>
-            <CardTitle>About Vasha AI</CardTitle>
+            <CardTitle>About Bhasha AI</CardTitle>
             <CardDescription>
               End-to-end Speech → Translation → Speech pipeline
             </CardDescription>

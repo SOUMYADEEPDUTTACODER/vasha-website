@@ -238,7 +238,7 @@ def send_email_verification(to_email: str, username: str, otp: str):
     """Send email verification OTP"""
     try:
         msg = EmailMessage()
-        msg["Subject"] = "Verify Your Email - Vasha AI"
+        msg["Subject"] = "Verify Your Email - Bhasha AI"
         msg["From"] = SMTP_FROM
         msg["To"] = to_email
 
@@ -247,7 +247,7 @@ def send_email_verification(to_email: str, username: str, otp: str):
             f"Your verification code is: {otp}\n\n"
             "Please enter this code to verify your email address.\n\n"
             "This code will expire in 5 minutes.\n\n"
-            "— The Vasha AI Team"
+            "— The Bhasha AI Team"
         )
 
         html = f"""
@@ -328,15 +328,15 @@ def send_welcome_email(to_email: str, username: str):
     """Send welcome email after verification"""
     try:
         msg = EmailMessage()
-        msg["Subject"] = "Welcome to Vasha AI 🎉"
+        msg["Subject"] = "Welcome to Bhasha AI 🎉"
         msg["From"] = SMTP_FROM
         msg["To"] = to_email
 
         msg.set_content(
             f"Hi {username},\n\n"
-            "Welcome to Vasha AI! We're excited to have you on board.\n\n"
+            "Welcome to Bhasha AI! We're excited to have you on board.\n\n"
             "You can now log in anytime and start chatting and use our services.\n\n"
-            "— The Vasha AI Team.\n\n"
+            "— The Bhasha AI Team.\n\n"
             "Developers:\n"
             "Deep Habiswashi\n"
             "Soumyadeep Dutta"

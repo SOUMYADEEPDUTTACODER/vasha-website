@@ -39,7 +39,7 @@ export function LoginForm({ onClose, onSignupClick, onForgotClick }: LoginFormPr
         setUsername(data.username)
         toast({
           title: "Login successful!",
-          description: "Welcome back to Vasha AI",
+          description: "Welcome back to Bhasha AI",
         })
         setIsLoading(false)
         onClose?.()
@@ -66,7 +66,7 @@ export function LoginForm({ onClose, onSignupClick, onForgotClick }: LoginFormPr
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">Login</CardTitle>
         <CardDescription className="text-center">
-          Enter your credentials to access Vasha AI
+          Enter your credentials to access Bhasha AI
         </CardDescription>
       </CardHeader>
       <CardContent>

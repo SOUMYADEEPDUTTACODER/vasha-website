@@ -23,7 +23,7 @@ export default function DevDocs() {
             <div>
               <h1 className="text-4xl font-bold">Developer Documentation</h1>
               <p className="text-xl text-muted-foreground mt-2">
-                Build with Vasha AI - comprehensive guides and API reference
+                Build with Bhasha AI - comprehensive guides and API reference
               </p>
             </div>
           </div>

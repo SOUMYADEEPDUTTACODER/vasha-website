@@ -38,7 +38,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm Vasha AI. How can I help you today?",
+      content: "Hello! I'm Bhasha AI. How can I help you today?",
       role: "assistant",
       timestamp: new Date(),
     },

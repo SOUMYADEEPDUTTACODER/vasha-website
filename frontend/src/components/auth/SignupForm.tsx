@@ -75,7 +75,7 @@ export function SignupForm({ onClose }: SignupFormProps) {
           setUsername(data.username)
           toast({
             title: "Account created successfully!",
-            description: "Welcome to Vasha AI",
+            description: "Welcome to Bhasha AI",
           })
           onClose?.()
           navigate("/")
@@ -102,7 +102,7 @@ export function SignupForm({ onClose }: SignupFormProps) {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">Sign Up</CardTitle>
         <CardDescription className="text-center">
-          Create your account to get started with Vasha AI
+          Create your account to get started with Bhasha AI
         </CardDescription>
       </CardHeader>
       <CardContent>

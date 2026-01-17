@@ -43,7 +43,7 @@ export function Header() {
               </div>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent drop-shadow-md">
-              Vasha AI
+              BHASHA AI
             </span>
           </Link>
 

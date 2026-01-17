@@ -85,7 +85,7 @@ export function Hero() {
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 relative z-10">
             <span className="block">Experience</span>
             <span className="block bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse">
-              Vasha AI
+              BHASHA AI
             </span>
           </h1>
 

@@ -1,0 +1,140 @@
+@startuml Vasha AI - Complete Pipeline Flowchart
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 12
+skinparam roundcorner 15
+skinparam shadowing false
+
+title Vasha AI - Complete Frontend & Backend Pipeline Flowchart
+
+' Color definitions with darker borders for white background
+skinparam rectangle {
+    BorderColor #333333
+    FontColor #000000
+    FontSize 11
+}
+
+' User
+rectangle "👤 User" as User #ff6b6b
+
+' Frontend
+package "Frontend (React + TypeScript)" #E3F2FD {
+    rectangle "Chat Page\nASR Interface" as ChatPage #BBDEFB
+    rectangle "MT Page\nTranslation" as MTPage #BBDEFB
+    rectangle "TTS Page\nText-to-Speech" as TTSPage #BBDEFB
+    rectangle "Auth UI\nSignup/Login" as AuthUI #FFF9C4
+}
+
+' Backend API
+package "Backend API (FastAPI)" #F3E5F5 {
+    rectangle "Auth API\n/signup, /login" as AuthAPI #E1BEE7
+    rectangle "ASR API\n/asr/upload" as ASRAPI #F8BBD0
+    rectangle "MT API\n/mt/translate" as MTAPI #C8E6C9
+    rectangle "TTS API\n/tts/generate" as TTSAPI #FFCCBC
+}
+
+' ASR Pipeline (Simplified)
+package "ASR Pipeline" #FCE4EC {
+    rectangle "Audio Processing\nFFmpeg" as AudioProc #F8BBD0
+    rectangle "Language Detection\n(LID)" as LID #B3E5FC
+    rectangle "ASR Models\nWhisper / AI4Bharat" as ASRModels #F8BBD0
+}
+
+' MT Pipeline (Simplified)
+package "Machine Translation" #E8F5E9 {
+    rectangle "MT Models\nIndicTrans2 / NLLB / Google" as MTModels #C8E6C9
+}
+
+' TTS Pipeline (Simplified)
+package "Text-to-Speech" #FFF3E0 {
+    rectangle "TTS Models\nXTTS / Indic / gTTS" as TTSModels #FFCCBC
+}
+
+' Database
+package "MongoDB Database" #E0F2F1 {
+    rectangle "Users & Chats" as DBStorage #B2DFDB
+}
+
+' External Services
+cloud "External Services" {
+    rectangle "Firebase / SMTP" as External #FFF9C4
+}
+
+' Main Flow - Simplified
+User --> AuthUI : "1. Signup/Login"
+AuthUI --> AuthAPI : "2. Authenticate"
+AuthAPI --> External : "3. Email OTP"
+AuthAPI --> DBStorage : "4. Store User"
+AuthAPI --> AuthUI : "5. JWT Token"
+AuthUI --> ChatPage : "6. Navigate"
+
+' ASR Flow - Simplified
+ChatPage --> ASRAPI : "7. Upload Audio\n(Mic/File/YouTube)"
+ASRAPI --> AudioProc : "8. Convert Audio"
+AudioProc --> LID : "9. Detect Language"
+LID --> ASRModels : "10. Select Model"
+ASRModels --> ASRAPI : "11. Transcription"
+ASRAPI --> ChatPage : "12. Display Text"
+ChatPage --> MTPage : "13. Continue"
+
+' MT Flow - Simplified
+MTPage --> MTAPI : "14. Translate Text"
+MTAPI --> MTModels : "15. Process"
+MTModels --> MTAPI : "16. Translated Text"
+MTAPI --> MTPage : "17. Display"
+MTPage --> TTSPage : "18. Continue"
+
+' TTS Flow - Simplified
+TTSPage --> TTSAPI : "19. Generate Speech"
+TTSAPI --> TTSModels : "20. Process"
+TTSModels --> TTSAPI : "21. Audio File"
+TTSAPI --> TTSPage : "22. Play Audio"
+TTSPage --> User : "23. Download/Play"
+
+' Optional: Save to DB
+ChatPage ..> DBStorage : "Save History\n(Optional)"
+MTPage ..> DBStorage : "Save Translation\n(Optional)"
+
+' Notes - Simplified
+note right of User
+  **Complete Pipeline:**
+  1. Authentication
+  2. ASR (Speech → Text)
+  3. MT (Text → Text)
+  4. TTS (Text → Speech)
+end note
+
+note right of ASRModels
+  **ASR Models:**
+  • Whisper (OpenAI)
+  • Faster Whisper
+  • AI4Bharat (Indic)
+  Auto Language Detection
+end note
+
+note right of MTModels
+  **MT Models:**
+  • IndicTrans2 (Indic)
+  • Meta NLLB-200 (Global)
+  • Google Translate (Fallback)
+end note
+
+note right of TTSModels
+  **TTS Models:**
+  • Coqui XTTS (Voice Cloning)
+  • Indic Parler-TTS
+  • Google TTS (Fallback)
+end note
+
+legend right
+  |<#BBDEFB> Frontend Pages |
+  |<#E1BEE7> Backend API |
+  |<#F8BBD0> ASR Pipeline |
+  |<#C8E6C9> Machine Translation |
+  |<#FFCCBC> Text-to-Speech |
+  |<#FFF9C4> Authentication |
+  |<#B2DFDB> Database |
+endlegend
+
+@enduml

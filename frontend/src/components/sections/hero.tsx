@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom"
-import { ArrowRight, Sparkles, Zap, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react"
+import { ArrowRight, Sparkles, Zap, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Play, Maximize, Mic, Volume2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import LanguageSupportTable from "@/components/sections/LanguageSupportTable"
 import ModelDetailsModal from "@/components/sections/ModelDetailsModal"
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 
 export function Hero() {
   const [hoverLeft, setHoverLeft] = useState(false)
@@ -12,6 +12,32 @@ export function Hero() {
   const [evalImages, setEvalImages] = useState<string[] | null>(null)
   const [evalIndex, setEvalIndex] = useState<number>(0)
   const [zoomed, setZoomed] = useState<boolean>(false)
+  const [videoPlaying, setVideoPlaying] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const toggleVideo = () => {
+    if (videoRef.current) {
+      if (videoPlaying) {
+        videoRef.current.pause()
+      } else {
+        videoRef.current.play()
+      }
+      setVideoPlaying(!videoPlaying)
+    }
+  }
+
+  const handleFullscreen = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (videoRef.current) {
+      if (videoRef.current.requestFullscreen) {
+        videoRef.current.requestFullscreen()
+      } else if ((videoRef.current as any).webkitRequestFullscreen) {
+        ; (videoRef.current as any).webkitRequestFullscreen()
+      } else if ((videoRef.current as any).msRequestFullscreen) {
+        ; (videoRef.current as any).msRequestFullscreen()
+      }
+    }
+  }
 
   // Move images down to align with "Experience Vasha AI"
   const imgLeftStyle: React.CSSProperties = {
@@ -85,7 +111,7 @@ export function Hero() {
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 relative z-10">
             <span className="block">Experience</span>
             <span className="block bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse">
-              BHASHA AI
+              VASHA AI
             </span>
           </h1>
 
@@ -96,9 +122,9 @@ export function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              asChild 
-              size="lg" 
+            <Button
+              asChild
+              size="lg"
               className="gradient-primary text-primary-foreground hover:shadow-glow transition-all duration-300 group text-lg px-8 py-6 w-full sm:w-auto"
             >
               <Link to="/chat" className="flex items-center space-x-2">
@@ -123,6 +149,54 @@ export function Hero() {
               <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">Real-time</div>
               <div className="text-sm text-muted-foreground">Responses</div>
             </div>
+          </div>
+        </div>
+
+        {/* How It Works Section */}
+        <div className="mt-24 text-center">
+          <div className="inline-flex items-center space-x-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-8 border border-accent/20">
+            <Zap className="h-4 w-4" />
+            <span>Process Showcase</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            How This Works
+          </h2>
+          <p className="text-muted-foreground mb-12 max-w-2xl mx-auto">
+            See VASHA AI in action. Witness how our advanced ASR, MT, and TTS models work together seamlessly to bridge language barriers.
+          </p>
+
+          <div
+            className="relative max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl group cursor-pointer border border-primary/20 bg-muted/30 backdrop-blur-sm"
+            onClick={toggleVideo}
+          >
+            <video
+              ref={videoRef}
+              src="/demovideo.mp4"
+              className="w-full h-auto"
+              onPlay={() => setVideoPlaying(true)}
+              onPause={() => setVideoPlaying(false)}
+              onEnded={() => setVideoPlaying(false)}
+            />
+
+            {!videoPlaying && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all duration-300">
+                <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center text-white shadow-[0_0_30px_rgba(var(--primary),0.5)] transform group-hover:scale-110 transition-transform duration-300">
+                  <Play className="h-10 w-10 fill-current ml-1" />
+                </div>
+              </div>
+            )}
+
+            {/* Fullscreen Button */}
+            <button
+              onClick={handleFullscreen}
+              className="absolute top-4 right-4 p-3 bg-black/50 hover:bg-black/70 rounded-full text-white backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+              title="Fullscreen"
+            >
+              <Maximize className="h-6 w-6" />
+            </button>
+
+            {/* Subtle Gradient Overlay on Bottom */}
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           </div>
         </div>
 
@@ -246,7 +320,7 @@ export function Hero() {
                 <div className="mt-3">
                   <button
                     className="inline-flex items-center space-x-3 rounded-full px-4 py-2 bg-muted/80 hover:bg-muted transition"
-                    onClick={() => { setEvalImages(["/tts_mos.png","/tts_rtf.png"]); setEvalIndex(0); setZoomed(false) }}
+                    onClick={() => { setEvalImages(["/tts_mos.png", "/tts_rtf.png"]); setEvalIndex(0); setZoomed(false) }}
                   >
                     <img src="/tts_mos.png" alt="TTS MOS" className="w-32 h-32 object-contain rounded" />
                     <span className="text-sm font-medium">Evaluation Plots</span>
@@ -261,8 +335,184 @@ export function Hero() {
         <div className="mt-10">
           <LanguageSupportTable />
         </div>
+
+        {/* Voice Translation Demos Section */}
+        <div className="mt-24 pt-16 border-t border-border/40">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4">
+              Voice Translation Demos
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Experience how our model preserves the essence of influential voices while translating them across languages.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* Ratan Tata Section */}
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-3xl p-8 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-6 mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-lg animate-pulse" />
+                  <img
+                    src="/ratantat.jpg"
+                    alt="Ratan Tata"
+                    className="relative w-24 h-24 object-cover rounded-2xl border-2 border-primary/20"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-foreground">Ratan Tata</h3>
+                  <p className="text-sm text-primary font-medium">Business Tycoon & Philanthropist</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                    <Mic className="h-4 w-4" />
+                    <span>Source Voice (English)</span>
+                  </div>
+                  <audio controls className="w-full accent-primary">
+                    <source src="/ratantata_input.wav" type="audio/wav" />
+                  </audio>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                    <Volume2 className="h-4 w-4" />
+                    <span>Translated Output (Hindi)</span>
+                  </div>
+                  <audio controls className="w-full h-10">
+                    <source src="/ratantata_output.wav" type="audio/wav" />
+                  </audio>
+                </div>
+              </div>
+            </div>
+
+            {/* APJ Abdul Kalam Section */}
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-3xl p-8 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-6 mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-accent/20 rounded-2xl blur-lg animate-pulse" />
+                  <img
+                    src="/apjphoto.jpg"
+                    alt="APJ Abdul Kalam"
+                    className="relative w-24 h-24 object-cover rounded-2xl border-2 border-accent/20"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-foreground">APJ Abdul Kalam</h3>
+                  <p className="text-sm text-accent font-medium">Former President of India</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                    <Mic className="h-4 w-4" />
+                    <span>Source Voice (English)</span>
+                  </div>
+                  <audio controls className="w-full accent-primary">
+                    <source src="/apjinputaudio.wav" type="audio/wav" />
+                  </audio>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-accent">
+                    <Volume2 className="h-4 w-4" />
+                    <span>Translated Output (Bengali)</span>
+                  </div>
+                  <audio controls className="w-full h-10">
+                    <source src="/apjoutputaudio.wav" type="audio/wav" />
+                  </audio>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto mt-12">
+            {/* Sundar Pichai Section */}
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-3xl p-8 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-6 mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-lg animate-pulse" />
+                  <img
+                    src="/sundarphoto.jpg"
+                    alt="Sundar Pichai"
+                    className="relative w-24 h-24 object-cover rounded-2xl border-2 border-primary/20"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-foreground">Sundar Pichai</h3>
+                  <p className="text-sm text-primary font-medium">CEO of Alphabet & Google</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                    <Mic className="h-4 w-4" />
+                    <span>Source Voice (English)</span>
+                  </div>
+                  <audio controls className="w-full accent-primary">
+                    <source src="/sundarinputaudio.wav" type="audio/wav" />
+                  </audio>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                    <Volume2 className="h-4 w-4" />
+                    <span>Translated Output (Hindi)</span>
+                  </div>
+                  <audio controls className="w-full h-10">
+                    <source src="/sundaroutput.wav" type="audio/wav" />
+                  </audio>
+                </div>
+              </div>
+            </div>
+
+            {/* Naveen Patnaik Section */}
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-3xl p-8 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-6 mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-accent/20 rounded-2xl blur-lg animate-pulse" />
+                  <img
+                    src="/naveenphoto.jpg"
+                    alt="Naveen Patnaik"
+                    className="relative w-24 h-24 object-cover rounded-2xl border-2 border-accent/20"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-foreground">Naveen Patnaik</h3>
+                  <p className="text-sm text-accent font-medium">Former Chief Minister of Odisha</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                    <Mic className="h-4 w-4" />
+                    <span>Source Voice (English)</span>
+                  </div>
+                  <audio controls className="w-full accent-primary">
+                    <source src="/naveeninput.wav" type="audio/wav" />
+                  </audio>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-accent">
+                    <Volume2 className="h-4 w-4" />
+                    <span>Translated Output (Odiya)</span>
+                  </div>
+                  <audio controls className="w-full h-10">
+                    <source src="/naveenoutput.wav" type="audio/wav" />
+                  </audio>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      
+
       {/* Model Details Modals */}
       {modalOpen && (
         <ModelDetailsModal

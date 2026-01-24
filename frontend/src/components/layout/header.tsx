@@ -43,7 +43,7 @@ export function Header() {
               </div>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent drop-shadow-md">
-              BHASHA AI
+              VASHA AI
             </span>
           </Link>
 
@@ -174,10 +174,10 @@ export function Header() {
         )}
       </div>
 
-        {/* Decorative 3D bar under header */}
-        <div className="flex justify-center mt-2">
-          <div className="h-2 w-52 rounded-full bg-gradient-to-r from-primary to-accent shadow-2xl transform rotate-1" />
-        </div>
+      {/* Decorative 3D bar under header */}
+      <div className="flex justify-center mt-2">
+        <div className="h-2 w-52 rounded-full bg-gradient-to-r from-primary to-accent shadow-2xl transform rotate-1" />
+      </div>
     </header>
   )
 }

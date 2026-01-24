@@ -38,7 +38,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm Bhasha AI. How can I help you today?",
+      content: "Hello! I'm Vasha AI. How can I help you today?",
       role: "assistant",
       timestamp: new Date(),
     },
@@ -49,23 +49,23 @@ export default function Chat() {
   const [asrProgress, setAsrProgress] = useState<number | null>(null)
   const [backendAvailable, setBackendAvailable] = useState<boolean | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  
+
   // Model selection
   const [selectedModel, setSelectedModel] = useState<string>("whisper")
   const [selectedWhisperSize, setSelectedWhisperSize] = useState<string>("base")
   const [selectedDecoding, setSelectedDecoding] = useState<string>("ctc")
-  
+
   // LID model selection
   const [selectedLIDModel, setSelectedLIDModel] = useState<string>("whisper")
-  
+
   // Detected language (from ASR response)
   const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null)
-  
+
   // Media inputs
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [audioFile, setAudioFile] = useState<File | null>(null)
   const [mediaLink, setMediaLink] = useState<string | null>(null)
-  
+
   // Response history
   const [responses, setResponses] = useState<ChatResponse[]>([])
 
@@ -91,29 +91,29 @@ export default function Chat() {
         console.error("Backend health check failed:", error)
       }
     }
-    
+
     checkBackend()
 
-    // Fetch persisted chat history for the logged-in user
-    ;(async () => {
-      try {
-        const token = localStorage.getItem("access_token")
-        if (!token) return
-        const res = await chatService.getChats(50)
-        if (res && res.messages) {
-          const parsed = res.messages.map((m: any, idx: number) => ({
-            id: `h-${idx}-${new Date(m.timestamp).getTime()}`,
-            content: m.text,
-            role: "assistant",
-            timestamp: new Date(m.timestamp),
-          }))
-          // prepend fetched history to responses (most recent first is already reversed in API)
-          setResponses((prev) => [...parsed.map((p: any) => ({ id: p.id, text: p.content, timestamp: p.timestamp, language: "unknown", audioUrl: undefined })), ...prev])
+      // Fetch persisted chat history for the logged-in user
+      ; (async () => {
+        try {
+          const token = localStorage.getItem("access_token")
+          if (!token) return
+          const res = await chatService.getChats(50)
+          if (res && res.messages) {
+            const parsed = res.messages.map((m: any, idx: number) => ({
+              id: `h-${idx}-${new Date(m.timestamp).getTime()}`,
+              content: m.text,
+              role: "assistant",
+              timestamp: new Date(m.timestamp),
+            }))
+            // prepend fetched history to responses (most recent first is already reversed in API)
+            setResponses((prev) => [...parsed.map((p: any) => ({ id: p.id, text: p.content, timestamp: p.timestamp, language: "unknown", audioUrl: undefined })), ...prev])
+          }
+        } catch (e) {
+          console.warn("Failed to load chat history:", e)
         }
-      } catch (e) {
-        console.warn("Failed to load chat history:", e)
-      }
-    })()
+      })()
   }, [])
 
   const scrollToBottom = () => {
@@ -135,7 +135,7 @@ export default function Chat() {
     // Prepare user message content
     let content = input.trim()
     let transcription = ""
-    
+
     // Process ASR if we have media inputs
     if (audioBlob || audioFile || mediaLink) {
       if (!backendAvailable) {
@@ -147,22 +147,22 @@ export default function Chat() {
         return
       }
 
-          // start progress simulation for ASR
-          setIsProcessingASR(true)
-          setAsrProgress(0)
-          let asrInterval: any = null
-          asrInterval = window.setInterval(() => {
-            setAsrProgress((p) => {
-              if (p === null) return 1
-              // increment slowly until 90%
-              const next = p + Math.floor(Math.random() * 6) + 2
-              return next >= 90 ? 90 : next
-            })
-          }, 300)
-      
+      // start progress simulation for ASR
+      setIsProcessingASR(true)
+      setAsrProgress(0)
+      let asrInterval: any = null
+      asrInterval = window.setInterval(() => {
+        setAsrProgress((p) => {
+          if (p === null) return 1
+          // increment slowly until 90%
+          const next = p + Math.floor(Math.random() * 6) + 2
+          return next >= 90 ? 90 : next
+        })
+      }, 300)
+
       try {
         let asrResponse: ASRResponse
-        
+
         if (audioBlob) {
           // Process microphone recording
           asrResponse = await asrService.processMicrophoneAudio(
@@ -203,7 +203,7 @@ export default function Chat() {
             try {
               const url = URL.createObjectURL(audioBlob)
               setLastRecordingUrl(url)
-            } catch {}
+            } catch { }
           }
           setLastTranscription(asrResponse.transcription)
           toast({
@@ -237,8 +237,8 @@ export default function Chat() {
 
     // Combine text input with transcription
     if (transcription) {
-      content = content 
-        ? `${content}\n\n[Transcription: ${transcription}]` 
+      content = content
+        ? `${content}\n\n[Transcription: ${transcription}]`
         : `[Transcription: ${transcription}]`
     }
 
@@ -252,7 +252,7 @@ export default function Chat() {
     setMessages(prev => [...prev, userMessage])
     setInput("")
     setIsLoading(true)
-    
+
     // Clear media inputs
     setAudioBlob(null)
     setAudioFile(null)
@@ -262,12 +262,12 @@ export default function Chat() {
     setTimeout(() => {
       const detectedLangName = detectedLanguage ? languages[detectedLanguage as keyof typeof languages] : "unknown"
       const responseText = `Thank you for your message${input.trim() ? `: "${input}"` : ""}${transcription ? `\n\nI heard: "${transcription}"` : ""}. This is an AI response from Vasha AI${detectedLanguage ? ` (detected language: ${detectedLangName})` : ""}. You can click on continue to run the machine tarnslation model.`
-      
+
       // Generate a dummy audio URL for demo purposes (in real app, this would be from TTS API)
-      const dummyAudioUrl = audioBlob 
-        ? URL.createObjectURL(audioBlob) 
+      const dummyAudioUrl = audioBlob
+        ? URL.createObjectURL(audioBlob)
         : "data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAASAAAeMwAUFBQUFCIiIiIiIjAwMDAwMD4+Pj4+PklJSUlJSVdXV1dXV2ZmZmZmZnR0dHR0dIiIiIiIiJaWlpaWlqSkpKSkpLKysrKysr+/v7+/v87Ozs7OztbW1tbW1uTk5OTk5PH//wAAADlMYXZmNTguMTMuMTAyAAAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
-      
+
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: responseText,
@@ -275,10 +275,10 @@ export default function Chat() {
         timestamp: new Date(),
         audioUrl: dummyAudioUrl
       }
-      
+
       setMessages(prev => [...prev, aiMessage])
       setIsLoading(false)
-      
+
       // Add to response history
       const newResponse: ChatResponse = {
         id: aiMessage.id,
@@ -287,19 +287,19 @@ export default function Chat() {
         language: detectedLanguage || "unknown",
         audioUrl: dummyAudioUrl
       }
-      
+
       setResponses(prev => [newResponse, ...prev])
 
-      // Persist assistant response to backend (if logged in)
-      ;(async () => {
-        try {
-          const token = localStorage.getItem("access_token")
-          if (!token) return
-          await chatService.saveChat(newResponse.text)
-        } catch (e) {
-          console.warn("Failed to persist chat:", e)
-        }
-      })()
+        // Persist assistant response to backend (if logged in)
+        ; (async () => {
+          try {
+            const token = localStorage.getItem("access_token")
+            if (!token) return
+            await chatService.saveChat(newResponse.text)
+          } catch (e) {
+            console.warn("Failed to persist chat:", e)
+          }
+        })()
     }, 1500)
   }
 
@@ -389,9 +389,8 @@ export default function Chat() {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex gap-3 ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
               >
                 {message.role === "assistant" && (
                   <Avatar className="h-8 w-8 gradient-primary">
@@ -400,13 +399,12 @@ export default function Chat() {
                     </AvatarFallback>
                   </Avatar>
                 )}
-                
+
                 <div
-                  className={`max-w-[85%] sm:max-w-[70%] px-4 py-3 rounded-2xl shadow-card ${
-                    message.role === "user"
-                      ? "gradient-primary text-primary-foreground ml-auto"
-                      : "bg-card border border-border/40"
-                  }`}
+                  className={`max-w-[85%] sm:max-w-[70%] px-4 py-3 rounded-2xl shadow-card ${message.role === "user"
+                    ? "gradient-primary text-primary-foreground ml-auto"
+                    : "bg-card border border-border/40"
+                    }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
@@ -440,9 +438,8 @@ export default function Chat() {
                           <Download className="h-3.5 w-3.5" />
                         </Button>
                       </div>
-                      <span className={`text-xs ${
-                        message.role === "user" ? "text-primary-foreground/70" : "text-muted-foreground"
-                      }`}>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      <span className={`text-xs ${message.role === "user" ? "text-primary-foreground/70" : "text-muted-foreground"
+                        }`}>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                   </div>
                 </div>
@@ -456,7 +453,7 @@ export default function Chat() {
                 )}
               </div>
             ))}
-            
+
             {isLoading && (
               <div className="flex gap-3 justify-start">
                 <Avatar className="h-8 w-8 gradient-primary">
@@ -507,7 +504,7 @@ export default function Chat() {
                 <Button
                   onClick={handleSend}
                   disabled={(
-                    (!audioBlob && !audioFile && !mediaLink && !input.trim()) || 
+                    (!audioBlob && !audioFile && !mediaLink && !input.trim()) ||
                     isLoading ||
                     isProcessingASR
                   )}
@@ -567,13 +564,13 @@ export default function Chat() {
                   <div className="w-64 ml-4">
                     <div className="flex items-center justify-between text-xs mb-1">
                       <span className="text-muted-foreground">Processing</span>
-                      <span className="font-medium">{Math.min(asrProgress,100)}%</span>
+                      <span className="font-medium">{Math.min(asrProgress, 100)}%</span>
                     </div>
-                    <Progress value={Math.min(asrProgress,100)} />
+                    <Progress value={Math.min(asrProgress, 100)} />
                   </div>
                 )}
               </div>
-              
+
               {/* Language Detection Status */}
               {detectedLanguage && (
                 <div className="p-3 bg-background/50 rounded-lg border border-border/40">
@@ -604,7 +601,7 @@ export default function Chat() {
                   />
                 </div>
               </div>
-              
+
               <div className="p-3 bg-background/50 rounded-lg border border-border/40">
                 <div className="font-medium text-sm tracking-tight">
                   <div className="flex items-center justify-between mb-2">
@@ -620,11 +617,11 @@ export default function Chat() {
                   />
                 </div>
               </div>
-              
+
               <Button
                 onClick={handleSend}
                 disabled={(
-                  (!audioBlob && !audioFile && !mediaLink) || 
+                  (!audioBlob && !audioFile && !mediaLink) ||
                   isLoading ||
                   isProcessingASR
                 )}
@@ -638,7 +635,7 @@ export default function Chat() {
                 <span>{isProcessingASR ? "Processing..." : "Send"}</span>
               </Button>
             </div>
-            
+
             {/* Media indicators */}
             {(audioBlob || audioFile || mediaLink) && (
               <div className="flex flex-wrap gap-2 items-center justify-center px-4 py-3 mt-3 bg-background/50 rounded-lg border border-border/40">

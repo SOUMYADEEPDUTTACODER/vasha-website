@@ -111,7 +111,7 @@ export default function MT() {
                       onClick={() => setModel('google')}
                       className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${model==='google' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}
                     >
-                      Google
+                      Global
                     </button>
                     <button
                       onClick={() => setModel('nllb')}

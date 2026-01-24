@@ -38,15 +38,15 @@ export function SignupForm({ onClose }: SignupFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!captchaValid) {
-      toast({ 
-        title: "Captcha Required", 
-        description: "Please complete the captcha verification" 
+      toast({
+        title: "Captcha Required",
+        description: "Please complete the captcha verification"
       })
       return
     }
-    
+
     setIsLoading(true)
 
     try {
@@ -56,7 +56,7 @@ export function SignupForm({ onClose }: SignupFormProps) {
         body: JSON.stringify(formData),
       })
       const data = await res.json()
-      
+
       if (res.ok) {
         if (data.requires_verification) {
           // New flow: Show OTP verification modal
@@ -75,7 +75,7 @@ export function SignupForm({ onClose }: SignupFormProps) {
           setUsername(data.username)
           toast({
             title: "Account created successfully!",
-            description: "Welcome to Bhasha AI",
+            description: "Welcome to Vasha AI",
           })
           onClose?.()
           navigate("/")
@@ -102,7 +102,7 @@ export function SignupForm({ onClose }: SignupFormProps) {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">Sign Up</CardTitle>
         <CardDescription className="text-center">
-          Create your account to get started with Bhasha AI
+          Create your account to get started with Vasha AI
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -154,7 +154,7 @@ export function SignupForm({ onClose }: SignupFormProps) {
               required
             />
           </div>
-          
+
           <CaptchaField
             value={captchaValue}
             onChange={setCaptchaValue}
@@ -166,8 +166,8 @@ export function SignupForm({ onClose }: SignupFormProps) {
               Login
             </Link>
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full gradient-primary text-primary-foreground"
             disabled={isLoading}
           >
@@ -178,14 +178,14 @@ export function SignupForm({ onClose }: SignupFormProps) {
           </div>
         </form>
       </CardContent>
-      
+
       {/* OTP Verification Modal */}
       <OtpVerificationModal
         open={showOtpModal}
         onOpenChange={setShowOtpModal}
         userData={userData}
       />
-      
+
 
     </Card>
   )

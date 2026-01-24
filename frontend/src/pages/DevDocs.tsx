@@ -15,15 +15,27 @@ export default function DevDocs() {
               <span>Back to Home</span>
             </Link>
           </Button>
-          
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="h-12 w-12 gradient-primary rounded-lg flex items-center justify-center">
-              <Code className="h-6 w-6 text-primary-foreground" />
+
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mt-8">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative aspect-auto max-w-[400px] overflow-hidden rounded-2xl border-2 border-border/50 bg-card">
+                <img
+                  src="/devdocsphoto.jpg"
+                  alt="Developer Team"
+                  className="w-full h-full object-cover transform transition duration-500 group-hover:scale-105"
+                />
+              </div>
             </div>
-            <div>
-              <h1 className="text-4xl font-bold">Developer Documentation</h1>
-              <p className="text-xl text-muted-foreground mt-2">
-                Build with Bhasha AI - comprehensive guides and API reference
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
+                <div className="h-12 w-12 gradient-primary rounded-lg flex items-center justify-center">
+                  <Code className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <h1 className="text-4xl font-bold">Developer Documentation</h1>
+              </div>
+              <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
+                Build with Vasha AI - comprehensive guides and API reference. Meet the engineers behind the technology that bridges language barriers worldwide.
               </p>
             </div>
           </div>

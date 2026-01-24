@@ -238,7 +238,7 @@ def send_email_verification(to_email: str, username: str, otp: str):
     """Send email verification OTP"""
     try:
         msg = EmailMessage()
-        msg["Subject"] = "Verify Your Email - Bhasha AI"
+        msg["Subject"] = "Verify Your Email - Vasha AI"
         msg["From"] = SMTP_FROM
         msg["To"] = to_email
 
@@ -247,13 +247,13 @@ def send_email_verification(to_email: str, username: str, otp: str):
             f"Your verification code is: {otp}\n\n"
             "Please enter this code to verify your email address.\n\n"
             "This code will expire in 5 minutes.\n\n"
-            "— The Bhasha AI Team"
+            "— The Vasha AI Team"
         )
 
         html = f"""
         <div style="font-family: Arial, sans-serif; line-height:1.6; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; color: white;">
-            <h1 style="margin: 0;">Bhasha AI</h1>
+            <h1 style="margin: 0;">Vasha AI</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">Verify Your Email</h2>
@@ -263,7 +263,7 @@ def send_email_verification(to_email: str, username: str, otp: str):
               <h1 style="color: #667eea; font-size: 32px; letter-spacing: 8px; margin: 0;">{otp}</h1>
             </div>
             <p style="color: #666; font-size: 14px;">This code will expire in 5 minutes.</p>
-            <p>— The Bhasha AI Team</p>
+            <p>— The Vasha AI Team</p>
           </div>
         </div>
         """
@@ -328,15 +328,15 @@ def send_welcome_email(to_email: str, username: str):
     """Send welcome email after verification"""
     try:
         msg = EmailMessage()
-        msg["Subject"] = "Welcome to Bhasha AI 🎉"
+        msg["Subject"] = "Welcome to Vasha AI 🎉"
         msg["From"] = SMTP_FROM
         msg["To"] = to_email
 
         msg.set_content(
             f"Hi {username},\n\n"
-            "Welcome to Bhasha AI! We're excited to have you on board.\n\n"
+            "Welcome to Vasha AI! We're excited to have you on board.\n\n"
             "You can now log in anytime and start chatting and use our services.\n\n"
-            "— The Bhasha AI Team.\n\n"
+            "— The Vasha AI Team.\n\n"
             "Developers:\n"
             "Deep Habiswashi\n"
             "Soumyadeep Dutta"
@@ -363,7 +363,7 @@ def send_welcome_email(to_email: str, username: str):
             <div style="display: inline-block; background: white; padding: 15px; border-radius: 50%; margin-bottom: 15px;">
               {logo_html}
             </div>
-            <h1 style="margin: 0; font-size: 28px; font-weight: bold;">Welcome to Bhasha AI</h1>
+            <h1 style="margin: 0; font-size: 28px; font-weight: bold;">Welcome to Vasha AI</h1>
             <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your AI journey begins here</p>
           </div>
           
@@ -371,7 +371,7 @@ def send_welcome_email(to_email: str, username: str):
           <div style="padding: 40px; background: #f9f9f9; border-radius: 0 0 10px 10px;">
             <h2 style="color: #333; margin-top: 0;">🎉 Welcome aboard!</h2>
             <p style="color: #555; font-size: 16px;">Hi <strong>{username}</strong>,</p>
-            <p style="color: #555; font-size: 16px;">We're thrilled to have you join the Bhasha AI community! Your account has been successfully verified and you're now ready to explore the amazing world of artificial intelligence.</p>
+            <p style="color: #555; font-size: 16px;">We're thrilled to have you join the Vasha AI community! Your account has been successfully verified and you're now ready to explore the amazing world of artificial intelligence.</p>
             
             <!-- Features Section -->
             <div style="background: white; padding: 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #667eea;">
@@ -394,7 +394,7 @@ def send_welcome_email(to_email: str, username: str):
             <!-- Footer -->
             <div style="border-top: 1px solid #ddd; padding-top: 20px; margin-top: 30px;">
               <p style="color: #666; font-size: 14px; margin: 0;">
-                — The Bhasha AI Team
+                — The Vasha AI Team
               </p>
               <p style="color: #888; font-size: 12px; margin: 10px 0 0 0;">
                 <strong>Developers:</strong> Deep Habiswashi & Soumyadeep Dutta

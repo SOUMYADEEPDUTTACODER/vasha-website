@@ -95,7 +95,7 @@ export default function TTS() {
                   <div className="flex items-center gap-2">
                     <button onClick={() => setSelectedModel('auto')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='auto' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Auto</button>
                     <button onClick={() => setSelectedModel('xtts')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='xtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Coqui TTS</button>
-                    <button onClick={() => setSelectedModel('gtts')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='gtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Google TTS</button>
+                    <button onClick={() => setSelectedModel('gtts')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='gtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Global TTS</button>
                     <button onClick={() => setSelectedModel('indic')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='indic' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Indic TTS</button>
                   </div>
                 </div>

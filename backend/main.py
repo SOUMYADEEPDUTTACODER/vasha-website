@@ -434,6 +434,74 @@ def send_welcome_email(to_email: str, username: str):
         print(f"❌ Failed to send welcome email to {to_email}: {str(e)}")
         print(f"   Error type: {type(e).__name__}")
 
+def send_feedback_email(username: str, email: str, message: str, rating: str = "N/A"):
+    """Send user feedback to developers"""
+    try:
+        msg = EmailMessage()
+        msg["Subject"] = f"New Feedback from {username} - Vasha AI"
+        msg["From"] = SMTP_FROM
+        msg["To"] = SMTP_USER # Send to the configured SMTP user (developer)
+        
+        # Add CC if desired, or just send to SMTP_USER
+        
+        content = f"""
+        New Feedback received for Vasha AI:
+        
+        User: {username}
+        Email: {email}
+        Rating: {rating}
+        
+        Message:
+        {message}
+        
+        ---
+        Vasha AI System
+        """
+        msg.set_content(content)
+        
+        html = f"""
+        <div style="font-family: Arial, sans-serif; line-height:1.6; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; text-align: center; color: white;">
+            <h1 style="margin: 0;">New User Feedback</h1>
+          </div>
+          <div style="padding: 30px; background: #fff;">
+            <p><strong>User:</strong> {username}</p>
+            <p><strong>Email:</strong> {email}</p>
+            <p><strong>Rating:</strong> {rating}</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <p><strong>Message:</strong></p>
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; white-space: pre-wrap;">{message}</div>
+          </div>
+        </div>
+        """
+        msg.add_alternative(html, subtype="html")
+        
+        context = ssl.create_default_context()
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+            server.starttls(context=context)
+            server.login(SMTP_USER, SMTP_PASS)
+            server.send_message(msg)
+        print(f"✅ Feedback email sent to developers")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to send feedback email: {str(e)}")
+        return False
+
+@app.post("/feedback")
+async def receive_feedback(data: dict, background_tasks: BackgroundTasks):
+    """Receive feedback from frontend and send email"""
+    username = data.get("username", "Anonymous")
+    email = data.get("email", "Not provided")
+    message = data.get("message")
+    rating = data.get("rating", "N/A")
+    
+    if not message:
+        raise HTTPException(status_code=400, detail="Message is required")
+        
+    background_tasks.add_task(send_feedback_email, username, email, message, rating)
+    
+    return {"success": True, "message": "Feedback received and developers notified"}
+
 
 
 @app.post("/login")

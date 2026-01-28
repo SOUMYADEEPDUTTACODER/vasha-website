@@ -19,6 +19,7 @@ import { ModelSelector } from "@/components/chat/ModelSelector"
 import { LIDModelSelector } from "@/components/chat/LIDModelSelector"
 import { ChatHistory, ChatResponse } from "@/components/chat/ChatHistory"
 import { AudioPlayer } from "@/components/chat/AudioPlayer"
+import { FeedbackButton } from "@/components/chat/FeedbackButton"
 
 // Import ASR service
 import { asrService, ASRResponse } from "@/services/asrService"
@@ -379,6 +380,7 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-sky-900 text-slate-100">
       <Header />
+      <FeedbackButton />
       <div className="container mx-auto h-[calc(100vh-4rem)] flex flex-col">
         {/* Header */}
         <div className="border-b border-border/40 bg-card/50 backdrop-blur-sm">

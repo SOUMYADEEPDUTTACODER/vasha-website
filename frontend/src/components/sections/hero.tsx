@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import LanguageSupportTable from "@/components/sections/LanguageSupportTable"
 import ModelDetailsModal from "@/components/sections/ModelDetailsModal"
 import React, { useState, useRef } from "react"
+import { FeedbackButton } from "@/components/chat/FeedbackButton"
 
 export function Hero() {
   const [hoverLeft, setHoverLeft] = useState(false)
@@ -76,6 +77,7 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden py-20 sm:py-32">
+      <FeedbackButton />
       {/* 3D Images beside Experience Vasha AI */}
       <img
         src="/mainimage.png"

@@ -2,7 +2,7 @@
 // This file manages the base URL for all API calls
 // In production, set VITE_API_BASE_URL environment variable in Vercel
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://13.233.164.164:8000';
 
 // Helper function to get full API URL
 export const getApiUrl = (endpoint: string): string => {

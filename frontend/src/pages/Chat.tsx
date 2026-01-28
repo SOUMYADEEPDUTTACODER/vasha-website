@@ -23,6 +23,7 @@ import { AudioPlayer } from "@/components/chat/AudioPlayer"
 // Import ASR service
 import { asrService, ASRResponse } from "@/services/asrService"
 import { chatService } from "@/services/chatService"
+import { ffmpegService } from "@/services/ffmpegService"
 
 interface Message {
   id: string
@@ -46,7 +47,9 @@ export default function Chat() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isProcessingASR, setIsProcessingASR] = useState(false)
+  const [isConverting, setIsConverting] = useState(false)
   const [asrProgress, setAsrProgress] = useState<number | null>(null)
+  const [conversionProgress, setConversionProgress] = useState<number>(0)
   const [backendAvailable, setBackendAvailable] = useState<boolean | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
@@ -162,21 +165,45 @@ export default function Chat() {
 
       try {
         let asrResponse: ASRResponse
+        let fileToUpload: File | Blob | null = null;
 
         if (audioBlob) {
-          // Process microphone recording
-          asrResponse = await asrService.processMicrophoneAudio(
-            audioBlob,
-            selectedModel,
-            selectedWhisperSize,
-            selectedDecoding,
-            5,
-            selectedLIDModel
-          )
+          fileToUpload = audioBlob;
         } else if (audioFile) {
-          // Process uploaded file
+          // Check if it's a video file that needs conversion
+          if (audioFile.type.startsWith('video/')) {
+            setIsConverting(true);
+            setConversionProgress(0);
+            try {
+              toast({ title: "Converting video to audio...", description: "This might take a moment." });
+              fileToUpload = await ffmpegService.convertToWav(audioFile, (progress) => {
+                setConversionProgress(progress);
+              });
+              toast({ title: "Conversion complete!" });
+            } catch (err) {
+              console.error("Conversion failed:", err);
+              toast({
+                title: "Conversion failed",
+                description: "Falling back to direct upload if possible.",
+                variant: "destructive"
+              });
+              fileToUpload = audioFile;
+            } finally {
+              setIsConverting(false);
+            }
+          } else {
+            fileToUpload = audioFile;
+          }
+        }
+
+        if (audioBlob || (audioFile && fileToUpload)) {
+          // Process microphone recording or file
+          const fileToProcess = fileToUpload instanceof File
+            ? fileToUpload
+            : new File([fileToUpload!], audioFile?.name.replace(/\.[^/.]+$/, "") + ".wav" || "recording.wav", { type: 'audio/wav' });
+
           asrResponse = await asrService.processFileUpload(
-            audioFile,
+            fileToProcess,
             selectedModel,
             selectedWhisperSize,
             selectedDecoding,
@@ -506,16 +533,19 @@ export default function Chat() {
                   disabled={(
                     (!audioBlob && !audioFile && !mediaLink && !input.trim()) ||
                     isLoading ||
-                    isProcessingASR
+                    isProcessingASR ||
+                    isConverting
                   )}
                   className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-[0_12px_30px_rgba(99,102,241,0.18)] hover:scale-105 transform transition-all duration-300 flex items-center space-x-2 px-4 py-2 rounded-xl"
                 >
-                  {isLoading || isProcessingASR ? (
+                  {isLoading || isProcessingASR || isConverting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <Send className="h-4 w-4" />
                   )}
-                  <span className="text-sm">{isProcessingASR ? "Processing..." : "Send"}</span>
+                  <span className="text-sm">
+                    {isConverting ? `Converting ${conversionProgress}%` : isProcessingASR ? "Processing..." : "Send"}
+                  </span>
                 </Button>
                 <div className="text-xs text-muted-foreground">Press Enter to send</div>
               </div>

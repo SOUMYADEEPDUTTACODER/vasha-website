@@ -54,3 +54,6 @@ backend/chunks/
 # Uncomment below if you want to ignore specific diagram files:
 # diagrams/*.tmp
 # diagrams/*.bak
+
+# Private keys
+backend/*.pem

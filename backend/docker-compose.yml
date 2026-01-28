@@ -1,8 +1,4 @@
-# Docker Compose for local development and testing
-# Use this for local testing before deploying to AWS EC2
-
 services:
-  # Vashafront Backend API
   backend:
     build:
       context: .
@@ -10,21 +6,18 @@ services:
     container_name: vashafront-backend
     ports:
       - "8000:8000"
+
+    # ✅ Load everything from .env
+    env_file:
+      - .env
+
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017/
-      - SECRET_KEY=your-secret-key-here-change-in-production
-      - FRONTEND_URL=http://localhost:5173,http://localhost:5174
-      - SMTP_HOST=smtp.gmail.com
-      - SMTP_PORT=587
-      - SMTP_USER=${SMTP_USER:-}
-      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
       - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
     volumes:
-      # Persistent volumes for output
       - ./tts_output:/app/tts_output
       - ./chunks:/app/chunks
-      # Environment file
-      - ./.env:/app/.env
+
     deploy:
       resources:
         reservations:
@@ -32,20 +25,7 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    depends_on:
-      - mongodb
-    restart: unless-stopped
-    networks:
-      - vashafront-network
 
-  # MongoDB Database
-  mongodb:
-    image: mongo:7
-    container_name: vashafront-mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
     restart: unless-stopped
     networks:
       - vashafront-network
@@ -53,6 +33,3 @@ services:
 networks:
   vashafront-network:
     driver: bridge
-
-volumes:
-  mongodb_data:

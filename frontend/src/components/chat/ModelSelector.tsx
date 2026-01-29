@@ -61,7 +61,7 @@ export function ModelSelector({
           {
             id: "whisper",
             name: "Whisper",
-            description: "OpenAI's Whisper model",
+            description: "ASR for global languages",
             supports_fallback: false,
           },
           {
@@ -73,7 +73,7 @@ export function ModelSelector({
           {
             id: "ai4bharat",
             name: "AI4Bharat Indic Conformer",
-            description: "Multilingual ASR for Indic languages",
+            description: "ASR for indic languages",
             supports_fallback: true,
             fallback_to: "whisper",
           },

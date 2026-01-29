@@ -45,6 +45,19 @@ export const languages = {
   'id': 'Indonesian',
 };
 
+export const indicLanguages = [
+  'as', 'bn', 'brx', 'doi', 'gu', 'hi', 'kn', 'kas_Arab', 'kas_Deva', 'gom',
+  'mai', 'ml', 'mr', 'mni_Beng', 'mni_Mtei', 'npi', 'or', 'pa', 'sa', 'sat',
+  'snd_Arab', 'snd_Deva', 'ta', 'te', 'ur'
+];
+
+export const globalLanguages = [
+  'en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh', 'ja', 'ko', 'ar', 'fa', 'tr', 'id'
+];
+
+export const isIndic = (langCode: string) => indicLanguages.includes(langCode);
+export const isGlobal = (langCode: string) => globalLanguages.includes(langCode);
+
 interface LanguageSelectorProps {
   selectedLanguage: string;
   onLanguageChange: (language: string) => void;

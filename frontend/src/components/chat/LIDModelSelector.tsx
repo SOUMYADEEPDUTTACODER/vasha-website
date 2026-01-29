@@ -14,7 +14,7 @@ interface LIDModelSelectorProps {
 
 const lidModels = [
   { value: "whisper", label: "Whisper", description: "OpenAI Whisper LID" },
-  { value: "facebook_mms", label: "Facebook MMS", description: "Facebook MMS LID (1024 languages)" },
+  { value: "facebook_mms", label: "Facebook MMS", description: "Odia Specific LID" },
 ];
 
 export function LIDModelSelector({

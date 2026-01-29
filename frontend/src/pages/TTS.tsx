@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Header } from "@/components/layout/header"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { LanguageSelector, languages } from "@/components/chat/LanguageSelector"
+import { LanguageSelector, languages, isGlobal, isIndic } from "@/components/chat/LanguageSelector"
 import { ttsService } from "@/services/ttsService"
 import { AudioPlayer } from "@/components/chat/AudioPlayer"
 import { Download } from "lucide-react"
@@ -16,13 +16,26 @@ export default function TTS() {
   const langCode: string | null = state.lang_code || null
   const srcText: string | null = state.src_text || null
   const srcLang: string | null = state.src_lang || null
-  
+
   const [selectedModel, setSelectedModel] = useState<'xtts' | 'gtts' | 'indic' | 'auto'>('auto')
   const [selectedLang, setSelectedLang] = useState<string>(langCode || "hi")
   const [loading, setLoading] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [ttsProgress, setTtsProgress] = useState<number | null>(null)
+
+  // Handle auto-model selection adjustment when selectedLang changes
+  useEffect(() => {
+    if (isGlobal(selectedLang)) {
+      if (selectedModel === 'indic') {
+        setSelectedModel('xtts')
+      }
+    } else if (isIndic(selectedLang)) {
+      if (selectedModel === 'xtts' || selectedModel === 'gtts') {
+        setSelectedModel('indic')
+      }
+    }
+  }, [selectedLang])
 
   const handleGenerateSpeech = async () => {
     if (!text) return
@@ -38,7 +51,7 @@ export default function TTS() {
         return next >= 90 ? 90 : next
       })
     }, 300)
-    
+
     try {
       const res = await ttsService.generateSpeech(text, selectedLang, selectedModel)
       const url = ttsService.getAudioUrl(res.audio_path)
@@ -83,7 +96,7 @@ export default function TTS() {
               <div className="text-sm text-muted-foreground mb-2">Text to Convert ({langCode || 'unknown'}):</div>
               <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
             </div>
-            
+
             <div className="p-4 rounded-lg border border-border/40 bg-card/60 flex flex-col gap-4 backdrop-blur-sm">
               <div className="flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-2">
@@ -93,10 +106,28 @@ export default function TTS() {
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="text-sm text-muted-foreground mr-2">TTS Model:</span>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setSelectedModel('auto')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='auto' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Auto</button>
-                    <button onClick={() => setSelectedModel('xtts')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='xtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Coqui TTS</button>
-                    <button onClick={() => setSelectedModel('gtts')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='gtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Global TTS</button>
-                    <button onClick={() => setSelectedModel('indic')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel==='indic' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Indic TTS</button>
+                    <button onClick={() => setSelectedModel('auto')} className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel === 'auto' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}>Auto</button>
+                    <button
+                      onClick={() => setSelectedModel('xtts')}
+                      disabled={isIndic(selectedLang)}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel === 'xtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'} ${isIndic(selectedLang) ? 'opacity-30 cursor-not-allowed' : ''}`}
+                    >
+                      Coqui TTS
+                    </button>
+                    <button
+                      onClick={() => setSelectedModel('gtts')}
+                      disabled={isIndic(selectedLang)}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel === 'gtts' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'} ${isIndic(selectedLang) ? 'opacity-30 cursor-not-allowed' : ''}`}
+                    >
+                      Global TTS
+                    </button>
+                    <button
+                      onClick={() => setSelectedModel('indic')}
+                      disabled={isGlobal(selectedLang)}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${selectedModel === 'indic' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'} ${isGlobal(selectedLang) ? 'opacity-30 cursor-not-allowed' : ''}`}
+                    >
+                      Indic TTS
+                    </button>
                   </div>
                 </div>
               </div>
@@ -108,22 +139,22 @@ export default function TTS() {
                 <div className="mt-3 w-full">
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="text-muted-foreground">TTS progress</span>
-                    <span className="font-medium">{Math.min(ttsProgress,100)}%</span>
+                    <span className="font-medium">{Math.min(ttsProgress, 100)}%</span>
                   </div>
-                  <Progress value={Math.min(ttsProgress,100)} />
+                  <Progress value={Math.min(ttsProgress, 100)} />
                 </div>
               )}
               {error && <div className="text-sm text-red-500">{error}</div>}
             </div>
-            
+
             {audioUrl && (
               <div className="p-4 rounded-lg border border-border/40 bg-card space-y-3">
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-sm text-muted-foreground">Generated Audio:</div>
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
+                    <Button
+                      size="sm"
+                      variant="outline"
                       onClick={handleDownload}
                       className="flex items-center gap-1 text-slate-100 border-border/40 bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl"
                     >

@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Header } from "@/components/layout/header"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { LanguageSelector, languages } from "@/components/chat/LanguageSelector"
+import { LanguageSelector, languages, isGlobal, isIndic } from "@/components/chat/LanguageSelector"
 import { mtService } from "@/services/mtService"
 import { AudioPlayer } from "@/components/chat/AudioPlayer"
 import { chatService } from "@/services/chatService"
@@ -24,6 +24,15 @@ export default function MT() {
   const [copied, setCopied] = useState<boolean>(false)
   const [mtProgress, setMtProgress] = useState<number | null>(null)
 
+  // Handle auto-model selection adjustment when tgtLang changes
+  useEffect(() => {
+    if (isGlobal(tgtLang) && model === 'indictrans') {
+      setModel('google')
+    } else if (isIndic(tgtLang) && model === 'nllb') {
+      setModel('indictrans')
+    }
+  }, [tgtLang])
+
   const handleTranslate = async () => {
     if (!transcription) return
     setLoading(true)
@@ -41,17 +50,17 @@ export default function MT() {
       const res = await mtService.translate(transcription, srcLang, tgtLang, model)
       setResult(res.translation)
 
-      // Persist translation to backend (if logged in)
-      ;(async () => {
-        try {
-          const token = localStorage.getItem("access_token")
-          if (!token) return
-          // Save only the translated text
-          await chatService.saveChat(res.translation)
-        } catch (e) {
-          console.warn("Failed to persist translation:", e)
-        }
-      })()
+        // Persist translation to backend (if logged in)
+        ; (async () => {
+          try {
+            const token = localStorage.getItem("access_token")
+            if (!token) return
+            // Save only the translated text
+            await chatService.saveChat(res.translation)
+          } catch (e) {
+            console.warn("Failed to persist translation:", e)
+          }
+        })()
     } catch (e: any) {
       setError(e?.message || 'Translation failed')
     } finally {
@@ -69,7 +78,7 @@ export default function MT() {
       await navigator.clipboard.writeText(result)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
-    } catch {}
+    } catch { }
   }
 
   return (
@@ -103,19 +112,21 @@ export default function MT() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setModel('indictrans')}
-                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${model==='indictrans' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}
+                      disabled={isGlobal(tgtLang)}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${model === 'indictrans' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'} ${isGlobal(tgtLang) ? 'opacity-30 cursor-not-allowed' : ''}`}
                     >
                       IndicTrans
                     </button>
                     <button
                       onClick={() => setModel('google')}
-                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${model==='google' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${model === 'google' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}
                     >
                       Global
                     </button>
                     <button
                       onClick={() => setModel('nllb')}
-                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${model==='nllb' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'}`}
+                      disabled={isIndic(tgtLang)}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold transition-transform ${model === 'nllb' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xl scale-105' : 'bg-background/20 text-slate-200'} ${isIndic(tgtLang) ? 'opacity-30 cursor-not-allowed' : ''}`}
                     >
                       Meta NLLB
                     </button>
@@ -132,9 +143,9 @@ export default function MT() {
                 <div className="mt-3 w-full">
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="text-muted-foreground">Translation progress</span>
-                    <span className="font-medium">{Math.min(mtProgress,100)}%</span>
+                    <span className="font-medium">{Math.min(mtProgress, 100)}%</span>
                   </div>
-                  <Progress value={Math.min(mtProgress,100)} />
+                  <Progress value={Math.min(mtProgress, 100)} />
                 </div>
               )}
               {error && <div className="text-sm text-red-500">{error}</div>}
@@ -147,14 +158,14 @@ export default function MT() {
                 </div>
                 <p className="whitespace-pre-wrap leading-relaxed">{result}</p>
                 <div className="pt-2 border-t border-border/40">
-                  <Button 
-                    onClick={() => navigate('/tts', { 
-                      state: { 
-                        text: result, 
+                  <Button
+                    onClick={() => navigate('/tts', {
+                      state: {
+                        text: result,
                         lang_code: tgtLang,
                         src_text: transcription,
                         src_lang: srcLang
-                      } 
+                      }
                     })}
                     className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-[0_12px_30px_rgba(99,102,241,0.18)] hover:scale-105 transform transition-all duration-300 rounded-xl"
                   >

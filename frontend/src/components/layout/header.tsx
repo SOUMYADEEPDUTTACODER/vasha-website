@@ -16,6 +16,7 @@ export function Header() {
   const navigation = [
     { name: "Developer Docs", href: "/docs/dev" },
     { name: "Documentation", href: "/docs/user" },
+    { name: "Evaluation Plots", href: "/evaluation-plots" },
   ]
 
   const handleLogout = () => {

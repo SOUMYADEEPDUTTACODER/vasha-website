@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Chat from "./pages/Chat";
 import DevDocs from "./pages/DevDocs";
 import UserDocs from "./pages/UserDocs";
+import EvaluationPlots from "./pages/EvaluationPlots";
 import NotFound from "./pages/NotFound";
 import MT from "./pages/MT";
 import TTS from "./pages/TTS";
@@ -36,6 +37,7 @@ const App = () => {
               <Route path="/mt" element={<MT />} />
               <Route path="/tts" element={<TTS />} />
               <Route path="/docs/user" element={<UserDocs />} />
+              <Route path="/evaluation-plots" element={<EvaluationPlots />} />
               <Route path="/login" element={<LoginForm />} />
               <Route path="/signup" element={<SignupForm />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

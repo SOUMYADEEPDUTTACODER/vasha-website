@@ -18,7 +18,7 @@ import os
 import tempfile
 import shutil
 from asr_pipeline import run_asr_with_fallback
-from lid import TARGET_LANGS
+from lid import TARGET_LANGS, detect_language_text
 from mt import translate_with_fallback
 from tts_handler import run_tts
 
@@ -858,6 +858,31 @@ async def get_supported_languages():
         "message": "Supported languages retrieved successfully"
     }
 
+
+class LIDRequest(BaseModel):
+    text: str
+
+@app.post("/lid/text")
+async def lid_text(payload: LIDRequest):
+    """Detect language from text using FastText."""
+    if not payload.text or not payload.text.strip():
+        raise HTTPException(status_code=400, detail="'text' is required")
+    try:
+        results = detect_language_text(payload.text)
+        if results:
+            # Map fasttext ISO 2-letter codes to TARGET_LANGS if possible
+            # FastText codes are often __label__en, __label__hi, etc.
+            # lid.py's detect_language_text already strips __label__
+            detected = results[0]["language"]
+            return {
+                "success": True, 
+                "detected_languages": results,
+                "top_language": detected,
+                "language_name": TARGET_LANGS.get(detected, "Unknown")
+            }
+        return {"success": False, "error": "Detection failed"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"LID failed: {e}")
 
 class MTRequest(BaseModel):
     text: str

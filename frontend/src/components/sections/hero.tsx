@@ -103,14 +103,18 @@ export function Hero() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 relative z-10">
-            <span className="block">Experience</span>
             <span className="block bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse">
               VASHA AI
             </span>
+            <span className="block text-2xl sm:text-2xl lg:text-3xl">
+              Versatile AI-based Speech & Human Adaptation
+            </span>
           </h1>
 
+
+
           <p className="text-xl sm:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-            Chat with our cutting-edge AI model now! Experience the future of artificial intelligence with seamless conversations and intelligent responses.
+            Our Model supports real time Audio,Video and Text Translation
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -121,8 +125,21 @@ export function Hero() {
             >
               <Link to="/chat" className="flex items-center space-x-2">
                 <Zap className="h-5 w-5 group-hover:rotate-12 transition-transform duration-300" />
-                <span>Use Our Model</span>
+                <span>Use Voice Model</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-primary/20 hover:border-primary/50 text-slate-200 hover:text-white transition-all duration-300 group text-lg px-8 py-6 w-full sm:w-auto backdrop-blur-sm"
+            >
+              <Link to="/text-chat" className="flex items-center space-x-2">
+                <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform duration-300 text-primary" />
+                <span>Use Text Model</span>
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300 opacity-0 group-hover:opacity-100" />
               </Link>
             </Button>
           </div>

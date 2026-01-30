@@ -12,6 +12,8 @@ from transformers import (
     AutoFeatureExtractor,
     Wav2Vec2ForSequenceClassification,
 )
+import fasttext
+from huggingface_hub import hf_hub_download
 
 # Load spaCy English large model for proper noun filtering
 nlp = spacy.load("en_core_web_lg")
@@ -250,3 +252,52 @@ def record_live_audio(duration=5, sample_rate=16000):
     out_path = tempfile.mktemp(suffix=".wav")
     write(out_path, sample_rate, audio)
     return out_path
+
+# --------------------------------------------------
+# FastText LID model for Text
+# --------------------------------------------------
+_fasttext_model = None
+
+def load_fasttext_lid():
+    global _fasttext_model
+    if _fasttext_model is not None:
+        return _fasttext_model
+        
+    print("⬇ Downloading FastText LID model (first time only)...", flush=True)
+    model_path = hf_hub_download(
+        repo_id="facebook/fasttext-language-identification",
+        filename="model.bin"
+    )
+    print("Model downloaded", flush=True)
+
+    print("Loading model into memory...", flush=True)
+    _fasttext_model = fasttext.load_model(model_path)
+    print("FastText LID model loaded", flush=True)
+    return _fasttext_model
+
+# Mapping Flores-200 labels to our 2-letter codes used in the frontend
+FLORES_TO_2LETTER = {
+    'asm_Beng': 'as', 'ben_Beng': 'bn', 'brx_Deva': 'brx', 'doi_Deva': 'doi',
+    'guj_Gujr': 'gu', 'hin_Deva': 'hi', 'kan_Knda': 'kn', 'mal_Mlym': 'ml',
+    'mar_Deva': 'mr', 'npi_Deva': 'npi', 'ory_Orya': 'or', 'pan_Guru': 'pa',
+    'san_Deva': 'sa', 'sat_Olck': 'sat', 'tam_Taml': 'ta', 'tel_Telu': 'te',
+    'urd_Arab': 'ur', 'eng_Latn': 'en', 'spa_Latn': 'es', 'fra_Latn': 'fr',
+    'deu_Latn': 'de', 'ita_Latn': 'it', 'por_Latn': 'pt', 'rus_Cyrl': 'ru',
+    'zho_Hans': 'zh', 'jpn_Jpan': 'ja', 'kor_Kore': 'ko', 'arb_Arab': 'ar',
+    'pes_Arab': 'fa', 'tur_Latn': 'tr', 'ind_Latn': 'id'
+}
+
+def detect_language_text(text, k=3):
+    model = load_fasttext_lid()
+    text = text.replace("\n", " ").strip()
+    labels, probs = model.predict(text, k=k)
+    results = []
+    for label, prob in zip(labels, probs):
+        lang_code = label.replace("__label__", "")
+        # Map Flores-200 to our 2-letter codes if match found
+        mapped_code = FLORES_TO_2LETTER.get(lang_code, lang_code)
+        results.append({
+            "language": mapped_code,
+            "confidence": round(float(prob), 4),
+        })
+    return results

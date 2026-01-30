@@ -32,3 +32,7 @@ pydub
 soundfile
 parler-tts
 numpy<2.0  # Pin to <2.0 for pyworld compatibility
+
+# LID Dependencies
+fasttext-wheel
+huggingface_hub

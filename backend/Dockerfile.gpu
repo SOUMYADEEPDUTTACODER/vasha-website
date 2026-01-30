@@ -80,7 +80,9 @@ RUN pip install --no-cache-dir \
     gTTS \
     pydub \
     soundfile \
-    parler-tts
+    parler-tts \
+    fasttext-wheel \
+    huggingface_hub
 
 # Install TTS (pyworld may fail, but that's okay - it's optional)
 # Use --no-build-isolation to use already-installed numpy

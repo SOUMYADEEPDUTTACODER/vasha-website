@@ -12,6 +12,7 @@ import EvaluationPlots from "./pages/EvaluationPlots";
 import NotFound from "./pages/NotFound";
 import MT from "./pages/MT";
 import TTS from "./pages/TTS";
+import TextChat from "./pages/TextChat";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignupForm } from "@/components/auth/SignupForm";
 import { useEffect } from "react";
@@ -36,6 +37,7 @@ const App = () => {
               <Route path="/docs/dev" element={<DevDocs />} />
               <Route path="/mt" element={<MT />} />
               <Route path="/tts" element={<TTS />} />
+              <Route path="/text-chat" element={<TextChat />} />
               <Route path="/docs/user" element={<UserDocs />} />
               <Route path="/evaluation-plots" element={<EvaluationPlots />} />
               <Route path="/login" element={<LoginForm />} />

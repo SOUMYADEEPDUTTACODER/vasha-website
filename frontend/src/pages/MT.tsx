@@ -15,8 +15,11 @@ export default function MT() {
   const transcription: string | null = state.transcription || null
   const language: string | null = state.language || null
   const audioUrl: string | null = state.audioUrl || null
+  const autoMode: boolean = state.autoMode || false
+  const targetLanguage: string | null = state.targetLanguage || null
+
   const [srcLang, setSrcLang] = useState<string>(language || "en")
-  const [tgtLang, setTgtLang] = useState<string>("hi")
+  const [tgtLang, setTgtLang] = useState<string>(targetLanguage || "hi")
   const [model, setModel] = useState<'google' | 'indictrans' | 'nllb'>("indictrans")
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<string | null>(null)
@@ -24,14 +27,22 @@ export default function MT() {
   const [copied, setCopied] = useState<boolean>(false)
   const [mtProgress, setMtProgress] = useState<number | null>(null)
 
-  // Handle auto-model selection adjustment when tgtLang changes
+  // Track auto-execution to prevent loops
+  const [hasAutoTranslated, setHasAutoTranslated] = useState(false)
+
+  // Handle auto-model selection adjustment
   useEffect(() => {
-    if (isGlobal(tgtLang) && model === 'indictrans') {
-      setModel('google')
-    } else if (isIndic(tgtLang) && model === 'nllb') {
+    if (isGlobal(srcLang) && isGlobal(tgtLang)) {
+      // Source AND Target are Global -> Use Google
+      if (model === 'indictrans') setModel('google')
+    } else if (isIndic(srcLang) && isIndic(tgtLang)) {
+      // Indic TO Indic -> Use IndicTrans
+      if (model !== 'indictrans') setModel('indictrans')
+    } else if ((isIndic(srcLang) || isIndic(tgtLang)) && model === 'nllb') {
+      // Prefer IndicTrans for any Indic involvement over NLLB unless specified
       setModel('indictrans')
     }
-  }, [tgtLang])
+  }, [tgtLang, srcLang])
 
   const handleTranslate = async () => {
     if (!transcription) return
@@ -80,6 +91,36 @@ export default function MT() {
       setTimeout(() => setCopied(false), 1500)
     } catch { }
   }
+
+  // Automation: Trigger translation automatically
+  useEffect(() => {
+    if (autoMode && transcription && !result && !loading && !hasAutoTranslated && !error) {
+      // Ensure model is appropriate before starting (wait for useEffect dependencies to stabilize)
+      const timer = setTimeout(() => {
+        handleTranslate()
+        setHasAutoTranslated(true)
+      }, 800)
+      return () => clearTimeout(timer)
+    }
+  }, [autoMode, transcription, result, loading, hasAutoTranslated, error, srcLang, tgtLang, model])
+
+  // Automation: Auto-navigate to TTS after success
+  useEffect(() => {
+    if (autoMode && result && !loading && hasAutoTranslated) {
+      const timer = setTimeout(() => {
+        navigate('/tts', {
+          state: {
+            text: result,
+            lang_code: tgtLang,
+            src_text: transcription,
+            src_lang: srcLang,
+            autoMode: true
+          }
+        })
+      }, 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [result, loading, autoMode, hasAutoTranslated, tgtLang, transcription, srcLang, navigate])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-sky-900 text-slate-100">

@@ -2,6 +2,11 @@ import { Link } from "react-router-dom"
 import { Code, ArrowLeft, ExternalLink, Github, Linkedin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function DevDocs() {
   return (
@@ -21,7 +26,7 @@ export default function DevDocs() {
               <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
               <div className="relative aspect-auto max-w-[400px] overflow-hidden rounded-2xl border-2 border-border/50 bg-card">
                 <img
-                  src="/devdocsphoto.jpg"
+                  src="/devloperphoto.jpg"
                   alt="Developer Team"
                   className="w-full h-full object-cover transform transition duration-500 group-hover:scale-105"
                 />
@@ -46,7 +51,27 @@ export default function DevDocs() {
           {/* Soumyadeep Dutta */}
           <Card className="shadow-card border-border/40 hover:shadow-glow transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-2xl">SOUMYADEEP DUTTA</CardTitle>
+              <div className="flex items-center gap-6 mb-4">
+                <Dialog>
+                  <DialogTrigger>
+                    <div className="relative h-60 w-60 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg cursor-pointer hover:scale-105 transition-transform duration-300">
+                      <img
+                        src="/soumyadeephoto.jpg"
+                        alt="Soumyadeep Dutta"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl p-0 overflow-hidden bg-transparent border-none shadow-none">
+                    <img
+                      src="/soumyadeephoto.jpg"
+                      alt="Soumyadeep Dutta"
+                      className="w-full h-auto rounded-lg shadow-2xl"
+                    />
+                  </DialogContent>
+                </Dialog>
+                <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">SOUMYADEEP DUTTA</CardTitle>
+              </div>
               <CardDescription>I’m an AI Engineer passionate about building intelligent systems that push the boundaries of what technology can achieve. My experience spans across Machine Learning, Deep Learning, Generative Adversarial Networks (GANs), and Large Language Models (LLMs) — using both PyTorch and TensorFlow to bring innovative ideas to life. I’ve worked on developing AI agents, creating generative models, and fine-tuning language models for real-world applications. My goal is to work on cutting-edge technologies that will shape the future of AI and redefine how humans and machines collaborate. Always eager to explore emerging trends in Generative AI, Reinforcement Learning, Multimodal AI, and Autonomous Systems — and to contribute to projects that make a meaningful global impact.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -68,7 +93,27 @@ export default function DevDocs() {
           {/* Deep Habiswashi */}
           <Card className="shadow-card border-border/40 hover:shadow-glow transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-2xl">DEEP HABISWASHI</CardTitle>
+              <div className="flex items-center gap-6 mb-4">
+                <Dialog>
+                  <DialogTrigger>
+                    <div className="relative h-60 w-60 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg cursor-pointer hover:scale-105 transition-transform duration-300">
+                      <img
+                        src="/deepphoto.jpg"
+                        alt="Deep Habiswashi"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl p-0 overflow-hidden bg-transparent border-none shadow-none">
+                    <img
+                      src="/deepphoto.jpg"
+                      alt="Deep Habiswashi"
+                      className="w-full h-auto rounded-lg shadow-2xl"
+                    />
+                  </DialogContent>
+                </Dialog>
+                <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">DEEP HABISWASHI</CardTitle>
+              </div>
               <CardDescription>I am a 4th-year Electronics & Computer Science Engineering student at KIIT University, currently residing in Bhubaneswar, Odisha. I have a strong foundation in data science, machine learning, and statistical analysis. My passion lies in transforming raw data into actionable insights and building intelligent systems that address real-world challenges. I am skilled in developing end-to-end data pipelines, creating predictive models, and deploying scalable AI solutions..</CardDescription>
             </CardHeader>
             <CardContent>

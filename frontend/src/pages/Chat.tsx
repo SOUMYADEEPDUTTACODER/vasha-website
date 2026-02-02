@@ -10,6 +10,9 @@ import { Separator } from "@/components/ui/separator"
 import { toast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+
 // Import custom components
 import { AudioRecorder } from "@/components/chat/AudioRecorder"
 import { FileUpload } from "@/components/chat/FileUpload"
@@ -61,6 +64,10 @@ export default function Chat() {
 
   // LID model selection
   const [selectedLIDModel, setSelectedLIDModel] = useState<string>("whisper")
+
+  // Automation state
+  const [isAutomationEnabled, setIsAutomationEnabled] = useState<boolean>(false)
+  const [targetLang, setTargetLang] = useState<string>("hi")
 
   // Detected language (from ASR response)
   const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null)
@@ -201,7 +208,7 @@ export default function Chat() {
           // Process microphone recording or file
           const fileToProcess = fileToUpload instanceof File
             ? fileToUpload
-            : new File([fileToUpload!], audioFile?.name.replace(/\.[^/.]+$/, "") + ".wav" || "recording.wav", { type: 'audio/wav' });
+            : new File([fileToUpload!], "recording.webm", { type: 'audio/webm' });
 
           asrResponse = await asrService.processFileUpload(
             fileToProcess,
@@ -261,6 +268,23 @@ export default function Chat() {
         // small delay then reset
         setTimeout(() => setIsProcessingASR(false), 200)
       }
+    }
+
+    // Automation: If enabled, navigate directly to MT page with configuration
+    if (isAutomationEnabled && transcription) {
+      // Small delay to allow UI to update briefly (optional, mainly for UX)
+      setTimeout(() => {
+        navigate('/mt', {
+          state: {
+            transcription,
+            language: detectedLanguage,
+            audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : (audioFile ? URL.createObjectURL(audioFile) : null), // Handle file URL if needed
+            targetLanguage: targetLang,
+            autoMode: true
+          }
+        })
+      }, 500)
+      return // Stop further processing in Chat page
     }
 
     // Combine text input with transcription
@@ -647,6 +671,37 @@ export default function Chat() {
                     selectedLIDModel={selectedLIDModel}
                     onLIDModelChange={setSelectedLIDModel}
                   />
+                </div>
+              </div>
+
+              {/* Automation Controls */}
+              <div className="p-3 bg-background/50 rounded-lg border border-border/40">
+                <div className="font-medium text-sm tracking-tight space-y-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-muted-foreground">Automation</span>
+                      <span className="px-2 py-0.5 text-[11px] rounded-full bg-blue-500/10 text-blue-500 font-semibold">AUTO</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="automation-mode"
+                      checked={isAutomationEnabled}
+                      onCheckedChange={setIsAutomationEnabled}
+                    />
+                    <Label htmlFor="automation-mode" className="text-xs cursor-pointer">Enable Auto-Flow</Label>
+                  </div>
+
+                  {isAutomationEnabled && (
+                    <div className="mt-2 space-y-1">
+                      <span className="text-xs text-muted-foreground block">Target Language</span>
+                      <LanguageSelector
+                        selectedLanguage={targetLang}
+                        onLanguageChange={setTargetLang}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -126,7 +126,7 @@ export default function MT() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-sky-900 text-slate-100">
       <Header />
       <div className="container mx-auto p-6 max-w-3xl">
-        <h1 className="text-2xl font-semibold mb-4">Machine Translation</h1>
+        <h1 className="text-2xl font-semibold mb-4">Translation</h1>
         {transcription ? (
           <div className="space-y-4">
             <div className="p-4 rounded-lg border border-border/40 bg-card">
@@ -210,7 +210,7 @@ export default function MT() {
                     })}
                     className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-[0_12px_30px_rgba(99,102,241,0.18)] hover:scale-105 transform transition-all duration-300 rounded-xl"
                   >
-                    Continue to TTS →
+                    Continue to Speech Generation →
                   </Button>
                 </div>
               </div>

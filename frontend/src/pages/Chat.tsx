@@ -580,7 +580,7 @@ export default function Chat() {
             {lastTranscription && (
               <div className="mb-4 p-3 bg-background/50 rounded-lg border border-border/40 flex flex-col sm:flex-row items-center gap-3 justify-between">
                 <div className="text-sm text-muted-foreground w-full sm:w-auto">
-                  ASR ready. You can play, download, or continue to MT.
+                  ASR ready. You can play, download, or continue to Translation.
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   {lastRecordingUrl && (
@@ -642,7 +642,7 @@ export default function Chat() {
                 <div className="font-medium text-sm tracking-tight">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-muted-foreground">ASR Model</span>
+                      <span className="text-xs text-muted-foreground">Transcribe Model</span>
                       <span className="px-2 py-0.5 text-[11px] rounded-full bg-primary/10 text-primary font-semibold">ASR</span>
                     </div>
                     <div className="h-1.5 w-20 rounded-full bg-gradient-to-r from-primary to-accent shadow-md transform rotate-1" />
@@ -662,7 +662,7 @@ export default function Chat() {
                 <div className="font-medium text-sm tracking-tight">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-muted-foreground">LID Model</span>
+                      <span className="text-xs text-muted-foreground">Language Identification</span>
                       <span className="px-2 py-0.5 text-[11px] rounded-full bg-foreground/5 text-muted-foreground font-semibold">LID</span>
                     </div>
                     <div className="h-1.5 w-20 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-md transform -rotate-1" />

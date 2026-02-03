@@ -131,6 +131,48 @@ export default function DevDocs() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Sudeshna Mohanty */}
+          <Card className="shadow-card border-border/40 hover:shadow-glow transition-shadow duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-6 mb-4">
+                <Dialog>
+                  <DialogTrigger>
+                    <div className="relative h-60 w-60 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg cursor-pointer hover:scale-105 transition-transform duration-300">
+                      <img
+                        src="/sudeshna.jpg"
+                        alt="Sudeshna Mohanty"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl p-0 overflow-hidden bg-transparent border-none shadow-none">
+                    <img
+                      src="/sudeshna.jpg"
+                      alt="Sudeshna Mohanty"
+                      className="w-full h-auto rounded-lg shadow-2xl"
+                    />
+                  </DialogContent>
+                </Dialog>
+                <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">SUDESHNA MOHANTY</CardTitle>
+              </div>
+              <CardDescription>I am an Electronics & Computer Science Engineering undergraduate, with an additional academic foundation in Data Science. My technical background spans Python, Java, and C++, with hands-on experience in machine learning, natural language processing, computer vision, real-time data processing, cloud based deployment, networking fundamentals, and IoT-driven hardware systems involving sensors and embedded architectures. Through extensive project-based development, I have worked on AI model design, data preprocessing, real-time inference pipelines, system integration, and performance optimization, often combining software, data, and system-level thinking.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-3">
+                <Button asChild variant="outline" className="gap-2">
+                  <a href="https://GitHub.com/sudeshna1310" target="_blank" rel="noopener noreferrer">
+                    <Github className="h-4 w-4" /> GitHub
+                  </a>
+                </Button>
+                <Button asChild variant="outline" className="gap-2">
+                  <a href="https://www.linkedin.com/in/sudeshna2003" target="_blank" rel="noopener noreferrer">
+                    <Linkedin className="h-4 w-4" /> LinkedIn
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Resources (optional) */}
@@ -162,6 +204,18 @@ export default function DevDocs() {
               <Button asChild variant="outline" className="justify-between hover:shadow-card transition-shadow duration-300">
                 <a href="https://www.linkedin.com/in/deephabiswashi/" target="_blank" rel="noopener noreferrer">
                   <span>Deep on LinkedIn</span>
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="justify-between hover:shadow-card transition-shadow duration-300">
+                <a href="https://GitHub.com/sudeshna1310" target="_blank" rel="noopener noreferrer">
+                  <span>Sudeshna on GitHub</span>
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="justify-between hover:shadow-card transition-shadow duration-300">
+                <a href="https://www.linkedin.com/in/sudeshna2003" target="_blank" rel="noopener noreferrer">
+                  <span>Sudeshna on LinkedIn</span>
                   <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>

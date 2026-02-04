@@ -2,11 +2,13 @@ import os
 import re
 from typing import List
 
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-translator = Translator()
+# translator definition not needed for deep-translator as we instantiate it on demand or globally if preferred, 
+# but it's lightweight to instantiate.
+
 
 # Meta NLLB-200 Model
 NLLB_MODEL_NAME = "facebook/nllb-200-distilled-1.3B"
@@ -145,11 +147,15 @@ def translate_google(texts: List[str], src_lang: str, tgt_lang: str) -> List[str
     src = normalize_code_for_google(src_lang)
     tgt = normalize_code_for_google(tgt_lang)
     outputs: List[str] = []
+    
+    # deep-translator handles one string at a time usually, looping is fine
     for t in texts:
         try:
-            res = translator.translate(t, src=src, dest=tgt)
-            outputs.append(res.text)
-        except Exception:
+            # deep-translator
+            res = GoogleTranslator(source=src, target=tgt).translate(t)
+            outputs.append(res)
+        except Exception as e:
+            print(f"Google translate error: {e}")
             outputs.append(t)
     return outputs
 

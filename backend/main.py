@@ -14,6 +14,7 @@ import smtplib, ssl
 from email.message import EmailMessage
 from fastapi import BackgroundTasks
 import base64
+import requests
 import os
 import tempfile
 import shutil
@@ -89,6 +90,10 @@ def authenticate_user(username: str, password: str):
     if not user or not verify_password(password, user["password"]):
         return False
     return user
+
+@app.get("/")
+async def root():
+    return {"message": "Vasha AI Backend is running", "status": "ok"}
 
 @app.post("/signup")
 async def signup(data: dict, background_tasks: BackgroundTasks):
@@ -511,6 +516,75 @@ async def login(data: dict):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token({"sub": user["username"]})
     return {"access_token": token, "username": user["username"]}
+
+@app.post("/google-auth")
+async def google_auth(data: dict):
+    token = data.get("token")
+    if not token:
+        raise HTTPException(status_code=400, detail="Token is required")
+    
+    email = None
+    
+    # Try verifying as ID Token first
+    try:
+        response = requests.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={token}")
+        if response.status_code == 200:
+            google_info = response.json()
+            email = google_info.get("email")
+    except Exception:
+        pass
+        
+    # If ID Token failed, try as Access Token
+    if not email:
+        try:
+            response = requests.get(f"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={token}")
+            if response.status_code == 200:
+                google_info = response.json()
+                email = google_info.get("email")
+        except Exception:
+            pass
+
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid Google token (neither valid ID token nor Access token)")
+        
+    # Check if user exists
+    user = users.find_one({"email": email})
+    
+    if not user:
+        # Create new user
+        username = email.split("@")[0]
+        # Ensure unique username
+        base_username = username
+        counter = 1
+        while users.find_one({"username": username}):
+            username = f"{base_username}{counter}"
+            counter += 1
+            
+        new_user = {
+            "username": username,
+            "email": email,
+            "phone": "",
+            "password": "", # No password for Google users
+            "email_verified": True, # Google emails are verified
+            "phone_verified": False,
+            "created_at": datetime.utcnow(),
+            "auth_provider": "google"
+        }
+        try:
+            result = users.insert_one(new_user)
+            user = users.find_one({"_id": result.inserted_id})
+        except Exception as e:
+            print(f"Error creating user: {e}")
+            raise HTTPException(status_code=500, detail="Failed to create user")
+    
+    # Create access token
+    access_token = create_access_token({"sub": user["username"]})
+    
+    return {
+        "access_token": access_token, 
+        "username": user["username"],
+        "message": "Login successful"
+    }
 
 @app.post("/logout")
 async def logout():

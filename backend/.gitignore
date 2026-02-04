@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+tts_output/
+chunks/
+*.pem

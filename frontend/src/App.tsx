@@ -17,6 +17,10 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { SignupForm } from "@/components/auth/SignupForm";
 import { useEffect } from "react";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+// Get Client ID from environment variables
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -25,30 +29,32 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="vasha-ui-theme">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/docs/dev" element={<DevDocs />} />
-              <Route path="/mt" element={<MT />} />
-              <Route path="/tts" element={<TTS />} />
-              <Route path="/text-chat" element={<TextChat />} />
-              <Route path="/docs/user" element={<UserDocs />} />
-              <Route path="/evaluation-plots" element={<EvaluationPlots />} />
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/signup" element={<SignupForm />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="system" storageKey="vasha-ui-theme">
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/docs/dev" element={<DevDocs />} />
+                <Route path="/mt" element={<MT />} />
+                <Route path="/tts" element={<TTS />} />
+                <Route path="/text-chat" element={<TextChat />} />
+                <Route path="/docs/user" element={<UserDocs />} />
+                <Route path="/evaluation-plots" element={<EvaluationPlots />} />
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/signup" element={<SignupForm />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 };
 

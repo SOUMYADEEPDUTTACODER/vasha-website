@@ -40,7 +40,7 @@ export default function DevDocs() {
                 <h1 className="text-4xl font-bold">Developer Documentation</h1>
               </div>
               <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
-                Build with Vasha AI - comprehensive guides and API reference. Meet the engineers behind the technology that bridges language barriers worldwide.
+                Meet the engineers behind the technology that bridges language barriers worldwide.
               </p>
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function DevDocs() {
                   <DialogTrigger>
                     <div className="relative h-60 w-60 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg cursor-pointer hover:scale-105 transition-transform duration-300">
                       <img
-                        src="/soumyadeephoto.jpg"
+                        src="/soumyadeepphoto.jpg"
                         alt="Soumyadeep Dutta"
                         className="h-full w-full object-cover"
                       />
@@ -64,7 +64,7 @@ export default function DevDocs() {
                   </DialogTrigger>
                   <DialogContent className="max-w-3xl p-0 overflow-hidden bg-transparent border-none shadow-none">
                     <img
-                      src="/soumyadeephoto.jpg"
+                      src="/soumyadeepphoto.jpg"
                       alt="Soumyadeep Dutta"
                       className="w-full h-auto rounded-lg shadow-2xl"
                     />

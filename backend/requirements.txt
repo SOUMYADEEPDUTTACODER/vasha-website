@@ -21,7 +21,7 @@ sounddevice
 yt-dlp
 ffmpeg-python
 python-multipart
-googletrans==4.0.0rc1
+deep-translator
 IndicTransToolkit
 sentencepiece
 
@@ -36,3 +36,4 @@ numpy<2.0  # Pin to <2.0 for pyworld compatibility
 # LID Dependencies
 fasttext-wheel
 huggingface_hub
+requests

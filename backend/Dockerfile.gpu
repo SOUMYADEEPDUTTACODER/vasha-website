@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libssl-dev \
     libffi-dev \
+    libgl1-mesa-glx \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set Python 3.10 as default
@@ -82,7 +84,11 @@ RUN pip install --no-cache-dir \
     soundfile \
     parler-tts \
     fasttext-wheel \
-    huggingface_hub
+    huggingface_hub \
+    paddlepaddle-gpu \
+    paddleocr \
+    pillow \
+    opencv-python-headless
 
 # Install TTS (pyworld may fail, but that's okay - it's optional)
 # Use --no-build-isolation to use already-installed numpy

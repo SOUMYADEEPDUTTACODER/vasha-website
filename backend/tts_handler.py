@@ -100,7 +100,7 @@ FLORES_TO_ISO = {
     # Latin transliterations
     "hi_Latn": "hin_Deva", "bn_Latn": "ben_Beng", "pa_Latn": "pan_Guru",
     "ta_Latn": "tam_Taml", "te_Latn": "tel_Telu", "kn_Latn": "kan_Knda",
-    "ml_Latn": "mal_Mlym", "en": "eng_Latn"
+    "ml_Latn": "mal_Mlym", "en": "en"
 }
 
 
@@ -122,7 +122,7 @@ GTTS_LANG_MAP = {
     "ur": "ur", "urd": "ur",
 
     # Global
-    "en": "en", "es": "es", "fr": "fr", "de": "de", "it": "it",
+    "en": "en", "eng": "en", "es": "es", "fr": "fr", "de": "de", "it": "it",
     "pt": "pt", "tr": "tr", "ru": "ru", "ja": "ja", "ko": "ko",
     "zh": "zh-CN", "zh-cn": "zh-CN", "ar": "ar", "id": "id", "fa": "fa",
 }

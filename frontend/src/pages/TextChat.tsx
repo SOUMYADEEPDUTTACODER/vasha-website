@@ -9,7 +9,8 @@ import { ttsService } from "@/services/ttsService"
 import { lidService } from "@/services/lidService"
 import { AudioPlayer } from "@/components/chat/AudioPlayer"
 import { chatService } from "@/services/chatService"
-import { Download, Languages, Sparkles, Volume2, ArrowRight } from "lucide-react"
+import { ocrService } from "@/services/ocrService"
+import { Download, Languages, Sparkles, Volume2, ArrowRight, Image as ImageIcon } from "lucide-react"
 
 export default function TextChat() {
     const navigate = useNavigate()
@@ -36,6 +37,7 @@ export default function TextChat() {
     const [error, setError] = useState<string | null>(null)
     const [progress, setProgress] = useState<number | null>(null)
     const [copied, setCopied] = useState(false)
+    const [ocrLoading, setOcrLoading] = useState(false)
 
     // Handle auto-model selection adjustment when tgtLang changes
     useEffect(() => {
@@ -155,7 +157,28 @@ export default function TextChat() {
         link.download = `vasha_tts_${Date.now()}.wav`
         document.body.appendChild(link)
         link.click()
-        document.body.removeChild(link)
+    }
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setOcrLoading(true)
+        setError(null)
+
+        try {
+            const res = await ocrService.extractText(file)
+            if (res.text) {
+                setInputText(res.text)
+            } else {
+                setError("No text found in image")
+            }
+        } catch (err: any) {
+            setError(err.message || "OCR Failed")
+        } finally {
+            setOcrLoading(false)
+            e.target.value = ''
+        }
     }
 
     return (
@@ -194,7 +217,24 @@ export default function TextChat() {
                         <div className="p-6 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl space-y-4">
                             <div className="flex items-center justify-between mb-2">
                                 <label className="text-sm font-semibold text-slate-400">Enter Text for Detection</label>
-                                <div className="px-3 py-1 rounded-full bg-slate-800/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">FastText LID</div>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        id="ocr-upload"
+                                        onChange={handleFileUpload}
+                                        disabled={ocrLoading}
+                                    />
+                                    <label
+                                        htmlFor="ocr-upload"
+                                        className={`cursor-pointer px-3 py-1 rounded-full bg-slate-800/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-1 ${ocrLoading ? 'opacity-50 pointer-events-none' : ''}`}
+                                    >
+                                        <ImageIcon className="w-3 h-3" />
+                                        {ocrLoading ? 'Scanning...' : 'Upload Image'}
+                                    </label>
+                                    <div className="px-3 py-1 rounded-full bg-slate-800/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">FastText LID</div>
+                                </div>
                             </div>
                             <textarea
                                 value={inputText}

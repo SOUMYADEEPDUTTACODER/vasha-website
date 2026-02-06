@@ -22,6 +22,7 @@ from asr_pipeline import run_asr_with_fallback
 from lid import TARGET_LANGS, detect_language_text
 from mt import translate_with_fallback
 from tts_handler import run_tts
+from ocr_pipeline import run_ocr
 
 load_dotenv()
 
@@ -224,11 +225,11 @@ async def complete_signup(data: dict, background_tasks: BackgroundTasks):
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # SMTP Configuration - Load from environment variables
-SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER = os.getenv("SMTP_USER", "")
-SMTP_PASS = os.getenv("SMTP_PASS", "")
-SMTP_FROM = os.getenv("SMTP_FROM", SMTP_USER)
+SMTP_USER = os.getenv("SMTP_USER", "").strip()
+SMTP_PASS = os.getenv("SMTP_PASS", "").strip()
+SMTP_FROM = os.getenv("SMTP_FROM", SMTP_USER).strip()
 
 # Validate SMTP configuration
 if not SMTP_USER or not SMTP_PASS:
@@ -445,7 +446,7 @@ def send_feedback_email(username: str, email: str, message: str, rating: str = "
         msg = EmailMessage()
         msg["Subject"] = f"New Feedback from {username} - Vasha AI"
         msg["From"] = SMTP_FROM
-        msg["To"] = SMTP_USER # Send to the configured SMTP user (developer)
+        msg["To"] = "vashaaimajor@gmail.com"
         
         # Add CC if desired, or just send to SMTP_USER
         
@@ -482,6 +483,7 @@ def send_feedback_email(username: str, email: str, message: str, rating: str = "
         msg.add_alternative(html, subtype="html")
         
         context = ssl.create_default_context()
+        print(f"DEBUG: Attempting SMTP login for user: '{SMTP_USER}'")
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
             server.starttls(context=context)
             server.login(SMTP_USER, SMTP_PASS)
@@ -1215,6 +1217,37 @@ async def get_available_models():
         ],
         "message": "Available models retrieved successfully"
     }
+
+# OCR Endpoint
+@app.post("/ocr")
+async def process_ocr(image: UploadFile = File(...)):
+    """
+    Process image for OCR using PaddleOCR.
+    Returns the extracted text.
+    """
+    try:
+        # Save the uploaded file temporarily
+        suffix = os.path.splitext(image.filename)[1]
+        if not suffix:
+            suffix = ".png" # Default to png
+            
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp_file:
+            shutil.copyfileobj(image.file, tmp_file)
+            temp_file_path = tmp_file.name
+        
+        # Run OCR
+        extracted_text = run_ocr(temp_file_path)
+        
+        # Clean up
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+            
+        return {"text": extracted_text}
+    except Exception as e:
+        # Clean up in case of error
+        if 'temp_file_path' in locals() and os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+        raise HTTPException(status_code=500, detail=f"OCR failed: {str(e)}")
 
 # MT Endpoint
 @app.post("/mt/translate")

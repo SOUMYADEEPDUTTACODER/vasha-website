@@ -37,3 +37,8 @@ numpy<2.0  # Pin to <2.0 for pyworld compatibility
 fasttext-wheel
 huggingface_hub
 requests
+
+# OCR Dependencies
+paddlepaddle
+paddleocr
+opencv-python-headless

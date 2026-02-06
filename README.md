@@ -7,7 +7,7 @@ This project is the **web application** for Vasha AI: an end‑to‑end pipeline
 ### 1. Website Screenshots
 
 #### Homepage
-![Vasha AI Homepage](diagrams/homepage.png)
+![Vasha AI Homepage](diagrams/homepage.jpeg)
 
 The homepage showcases the landing page of Vasha AI, featuring the hero section with key features, language support information, and navigation to different sections of the application. It provides an intuitive interface for users to understand the capabilities of the real-time speech-to-speech translation system.
 
@@ -16,7 +16,23 @@ The homepage showcases the landing page of Vasha AI, featuring the hero section 
 
 The chat page is the core interaction interface where users can upload audio files, record from their microphone, or provide YouTube URLs for speech recognition. It displays real-time transcription results, detected language information, model selection options, and provides seamless navigation to the machine translation and text-to-speech workflows.
 
-### 2. Architecture Overview
+### 2. Workflow Visualization
+
+Understanding the end-to-end pipeline through visual guides:
+
+#### Step 1: Voice Input & Processing
+![Voice Translation](diagrams/Voice%20Translation.jpeg)
+*The flow from user audio input to automatic speech recognition (ASR).*
+
+#### Step 2: Text Translation
+![Text Translation](diagrams/Text%20Translation.jpeg)
+*The machine translation interface where recognized text is converted to the target language.*
+
+#### Step 3: Audio Generation
+![Audio Generation](diagrams/Audio%20Generation.jpeg)
+*The synthesis pipeline using TTS models to generate spoken output.*
+
+### 3. Architecture Overview
 
 - **Frontend (`frontend/`)**
   - Vite + React + TypeScript, Tailwind CSS, shadcn-ui components
@@ -43,7 +59,7 @@ The chat page is the core interaction interface where users can upload audio fil
     - `tts_handler.ts` + `indic_tts.py`, `tts_gtts.py`, `xtts.py` to combine **Indic Parler‑TTS**, **Coqui XTTS**, and **gTTS** with auto‑fallback
   - Additional docs in this folder (`ASR_README.md`, `AUTHENTICATION_FLOW.md`, cloud deployment guides)
 
-### 3. Core User Features
+### 4. Core User Features
 
 - **ASR Chat (Speech → Text)**
   - Input options in `Chat` page:
@@ -90,7 +106,7 @@ The chat page is the core interaction interface where users can upload audio fil
   - Frontend components:
     - `AuthDialog`, `SignupForm`, `LoginForm`, `OtpVerificationModal`, `PhoneMfaModal`, `CaptchaField`
 
-### 4. Project Directory Structure
+### 5. Project Directory Structure
 
 ```
 vasha-website/
@@ -189,6 +205,8 @@ vasha-website/
 │   │   └── vite-env.d.ts             # Vite type definitions
 │   │
 │   ├── public/                       # Static assets
+│   │   ├── assets/
+│   │   │   └── diagrams/             # Publicly accessible diagrams
 │   │   ├── logo.png
 │   │   ├── favicon.ico
 │   │   ├── mainimage.png
@@ -212,17 +230,17 @@ vasha-website/
 │   ├── vite.config.ts                # Vite configuration
 │   ├── tailwind.config.ts            # Tailwind CSS configuration
 │   ├── tsconfig.json                 # TypeScript configuration
-│   ├── tsconfig.app.json
-│   ├── tsconfig.node.json
-│   ├── postcss.config.js             # PostCSS configuration
 │   ├── components.json               # shadcn-ui components config
 │   ├── eslint.config.js              # ESLint configuration
 │   ├── index.html                    # HTML entry point
 │   └── README.md                     # Frontend-specific README
 │
 ├── diagrams/                         # Project diagrams and screenshots
-│   ├── homepage.png                  # Homepage screenshot
-│   └── chatpage.jfif                 # Chat page screenshot
+│   ├── homepage.jpeg                 # Homepage screenshot
+│   ├── chatpage.jpeg                 # Chat page screenshot
+│   ├── Voice Translation.jpeg        # Input & ASR architecture
+│   ├── Text Translation.jpeg         # Translation workflow
+│   └── Audio Generation.jpeg         # TTS synthesis pipeline
 │
 ├── .gitignore                        # Git ignore rules
 ├── package.json                      # Root package.json (if any)
@@ -235,7 +253,7 @@ vasha-website/
     └── VERCEL_FRONTEND_SETUP.md
 ```
 
-### 5. Running the Web App (Dev)
+### 6. Running the Web App (Dev)
 
 - **Backend**
   - `cd backend`

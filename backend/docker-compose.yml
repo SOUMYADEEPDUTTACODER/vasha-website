@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.gpu
     container_name: vashafront-backend
     ports:
-      - "8000:8000"
+      - "80:8000"
 
     # ✅ Load everything from .env
     env_file:

@@ -9,6 +9,7 @@ import Chat from "./pages/Chat";
 import DevDocs from "./pages/DevDocs";
 import UserDocs from "./pages/UserDocs";
 import EvaluationPlots from "./pages/EvaluationPlots";
+import ChromeExtension from "./pages/ChromeExtension";
 import NotFound from "./pages/NotFound";
 import MT from "./pages/MT";
 import TTS from "./pages/TTS";
@@ -45,6 +46,7 @@ const App = () => {
                 <Route path="/text-chat" element={<TextChat />} />
                 <Route path="/docs/user" element={<UserDocs />} />
                 <Route path="/evaluation-plots" element={<EvaluationPlots />} />
+                <Route path="/chrome-extension" element={<ChromeExtension />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

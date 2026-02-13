@@ -7,10 +7,10 @@ import { languages } from "@/components/chat/LanguageSelector"
 
 export default function LanguageSupportTable() {
   const indicLanguageCodes = [
-    'as','bn','brx','doi','gu','hi','kn','kas_Arab','kas_Deva','gom','mai','ml','mr','mni_Beng','mni_Mtei','npi','or','pa','sa','sat','snd_Arab','snd_Deva','ta','te','ur'
+    'as', 'bn', 'brx', 'doi', 'gu', 'hi', 'kn', 'kas_Arab', 'kas_Deva', 'gom', 'mai', 'ml', 'mr', 'mni_Beng', 'mni_Mtei', 'npi', 'or', 'pa', 'sa', 'sat', 'snd_Arab', 'snd_Deva', 'ta', 'te', 'ur'
   ]
   const globalLanguageCodes = [
-    'en','es','fr','de','it','pt','ru','zh','ja','ko','ar','fa','tr','id'
+    'en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh', 'ja', 'ko', 'ar', 'fa', 'tr', 'id'
   ]
 
   return (
@@ -41,6 +41,15 @@ export default function LanguageSupportTable() {
                 <TableBody>
                   <TableRow>
                     <TableCell className="font-medium">ASR</TableCell>
+                    <TableCell>
+                      <Badge className="mr-2">Whisper</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-muted-foreground">—</span>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">LID</TableCell>
                     <TableCell>
                       <Badge className="mr-2">Whisper</Badge>
                     </TableCell>
@@ -96,6 +105,15 @@ export default function LanguageSupportTable() {
                     <TableCell>
                       <Badge className="mr-2" variant="secondary">Indic Conformer</Badge>
                       <Badge className="mr-2">Whisper</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-muted-foreground">—</span>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">LID</TableCell>
+                    <TableCell>
+                      <Badge className="mr-2" variant="secondary">IndicLID</Badge>
                     </TableCell>
                     <TableCell>
                       <span className="text-muted-foreground">—</span>

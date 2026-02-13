@@ -193,7 +193,21 @@ export default function UserDocs() {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 border-b border-border/50 pb-2">2. Machine Translation (MT)</h3>
+                  <h3 className="text-lg font-semibold mb-3 border-b border-border/50 pb-2">2. Language Identification (LID)</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="p-4 bg-muted/50 rounded-lg">
+                      <h4 className="font-medium text-foreground mb-2">Whisper (Global)</h4>
+                      <p className="text-sm text-muted-foreground">Utilizes Whisper's built-in language detection capabilities for accurate identification of global languages.</p>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg">
+                      <h4 className="font-medium text-foreground mb-2">IndicLID (Local)</h4>
+                      <p className="text-sm text-muted-foreground">A specialized model for distinguishing between various Indian languages and dialects with high precision.</p>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3 border-b border-border/50 pb-2">3. Machine Translation (MT)</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     The backend orchestrates translation services, falling back to different providers if one fails.
                   </p>
@@ -204,7 +218,7 @@ export default function UserDocs() {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 border-b border-border/50 pb-2">3. Text-to-Speech (TTS)</h3>
+                  <h3 className="text-lg font-semibold mb-3 border-b border-border/50 pb-2">4. Text-to-Speech (TTS)</h3>
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="xtts">
                       <AccordionTrigger>Coqui XTTS v2</AccordionTrigger>

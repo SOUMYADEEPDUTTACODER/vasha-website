@@ -17,6 +17,7 @@ export function Header() {
     { name: "Developer Docs", href: "/docs/dev" },
     { name: "Documentation", href: "/docs/user" },
     { name: "Evaluation Plots", href: "/evaluation-plots" },
+    { name: "Chrome Extension", href: "/chrome-extension" },
   ]
 
   const handleLogout = () => {

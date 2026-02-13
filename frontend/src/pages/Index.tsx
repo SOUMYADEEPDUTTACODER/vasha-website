@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 import { Hero } from "@/components/sections/hero"
 import { useEffect } from "react"
 
@@ -13,6 +14,7 @@ const Index = () => {
       <main>
         <Hero />
       </main>
+      <Footer />
     </div>
   );
 };

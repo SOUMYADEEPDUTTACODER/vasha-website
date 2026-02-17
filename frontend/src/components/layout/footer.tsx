@@ -1,6 +1,5 @@
 
-import { Github, Cloud } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Cloud } from "lucide-react"
 
 export function Footer() {
     return (
@@ -18,17 +17,7 @@ export function Footer() {
                         <span>Cloud Deployed</span>
                     </div>
 
-                    <Button variant="ghost" size="sm" asChild className="hover:text-primary gap-2">
-                        <a
-                            href="https://github.com/SOUMYADEEPDUTTACODER/vasha-website.git"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center space-x-2"
-                        >
-                            <Github className="h-5 w-5" />
-                            <span>Source Code</span>
-                        </a>
-                    </Button>
+
                 </div>
             </div>
         </footer>

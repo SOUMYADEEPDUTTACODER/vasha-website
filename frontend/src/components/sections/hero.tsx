@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { ArrowRight, Sparkles, Zap, Play, Maximize, Mic, Volume2 } from "lucide-react"
+import { ArrowRight, Sparkles, Zap, Play, Maximize, Mic, Volume2, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import LanguageSupportTable from "@/components/sections/LanguageSupportTable"
 import ModelDetailsModal from "@/components/sections/ModelDetailsModal"
@@ -113,7 +113,7 @@ export function Hero() {
 
 
 
-          <p className="text-xl sm:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl sm:text-2xl text-black dark:text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
             Our Model supports real time Audio,Video and Text Translation
           </p>
 
@@ -134,7 +134,7 @@ export function Hero() {
               asChild
               size="lg"
               variant="outline"
-              className="border-primary/20 hover:border-primary/50 text-slate-200 hover:text-white transition-all duration-300 group text-lg px-8 py-6 w-full sm:w-auto backdrop-blur-sm"
+              className="border-primary/20 hover:border-primary/50 text-black dark:text-slate-200 hover:text-primary dark:hover:text-white transition-all duration-300 group text-lg px-8 py-6 w-full sm:w-auto backdrop-blur-sm"
             >
               <Link to="/text-chat" className="flex items-center space-x-2">
                 <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform duration-300 text-primary" />
@@ -147,23 +147,23 @@ export function Hero() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mt-20 pt-12 border-t border-border/40">
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">99.9%</div>
-              <div className="text-sm text-muted-foreground">Uptime</div>
+              <div className="text-sm text-black dark:text-muted-foreground">Uptime</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">22 Indian</div>
-              <div className="text-sm text-muted-foreground">Languages</div>
+              <div className="text-sm text-black dark:text-muted-foreground">Languages</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">14 Global</div>
-              <div className="text-sm text-muted-foreground">Languages</div>
+              <div className="text-sm text-black dark:text-muted-foreground">Languages</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">Real-time</div>
-              <div className="text-sm text-muted-foreground">Content-Translation</div>
+              <div className="text-sm text-black dark:text-muted-foreground">Content-Translation</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">Automated</div>
-              <div className="text-sm text-muted-foreground">Video Dubbing</div>
+              <div className="text-sm text-black dark:text-muted-foreground">Video Dubbing</div>
             </div>
           </div>
         </div>
@@ -176,7 +176,7 @@ export function Hero() {
           <h2 className="text-3xl sm:text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             How This Works
           </h2>
-          <p className="text-muted-foreground mb-12 max-w-2xl mx-auto">
+          <p className="text-black dark:text-muted-foreground mb-12 max-w-2xl mx-auto">
             See VASHA AI in action. Witness how our advanced ASR, MT, and TTS models work together seamlessly to bridge language barriers.
           </p>
 
@@ -211,6 +211,24 @@ export function Hero() {
 
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           </div>
+
+          <div className="mt-10 flex flex-col items-center gap-4 text-sm sm:text-base">
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <a href="https://github.com/SOUMYADEEPDUTTACODER/vasha-website.git" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors font-medium">
+                <Github className="h-5 w-5" />
+                <span>vasha-website</span>
+              </a>
+              <span className="text-black dark:text-muted-foreground font-medium">(cloud deployment)</span>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <span className="mr-1 font-bold"></span>
+              <a href="https://github.com/deephabiswashi/Vasha-AI.git" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors font-medium">
+                <Github className="h-5 w-5" />
+                <span>Vasha-AI</span>
+              </a>
+              <span className="text-black dark:text-muted-foreground font-medium">(Use for local deployment)</span>
+            </div>
+          </div>
         </div>
 
         <div className="mt-24 grid grid-cols-1 gap-8 ml-0">
@@ -219,7 +237,7 @@ export function Hero() {
             style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
           >
             <div className="text-2xl font-bold text-primary mb-2">ASR</div>
-            <div className="text-muted-foreground mb-4">Convert audio to text</div>
+            <div className="text-black dark:text-muted-foreground mb-4">Convert audio to text</div>
             <div className="flex flex-row items-center w-full gap-6">
               <div className="w-38 h-38 bg-muted rounded-xl flex items-center justify-start mb-2 overflow-hidden shadow-lg">
                 <video src="/asrvid.mp4" autoPlay loop muted className="w-38 h-38 object-contain model-img-fade" />
@@ -236,7 +254,7 @@ export function Hero() {
                   <span className="block text-lg font-semibold text-primary mb-1" style={{ letterSpacing: '0.03em' }}>
                     Automatic Speech Recognition (ASR)
                   </span>
-                  <span className="block text-gray-600">
+                  <span className="block text-black dark:text-gray-600">
                     Our ASR model accurately converts spoken audio into text across multiple Indian and global languages.
                     Leveraging advanced deep learning, it supports various dialects and noisy environments, enabling seamless transcription for applications like voice assistants, subtitles, and accessibility tools.
                   </span>
@@ -252,7 +270,7 @@ export function Hero() {
             style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}
           >
             <div className="text-2xl font-bold text-primary mb-2">MT</div>
-            <div className="text-muted-foreground mb-4">Convert text to text</div>
+            <div className="text-black dark:text-muted-foreground mb-4">Convert text to text</div>
             <div className="flex flex-row items-center w-full gap-6">
               <div className="w-38 h-38 bg-muted rounded-xl flex items-center justify-start mb-2 overflow-hidden shadow-lg">
                 <video src="/mtvid.mp4" autoPlay loop muted className="w-38 h-38 object-contain model-img-fade" />
@@ -269,7 +287,7 @@ export function Hero() {
                   <span className="block text-lg font-semibold text-primary mb-1" style={{ letterSpacing: '0.03em' }}>
                     Machine Translation (MT)
                   </span>
-                  <span className="block text-gray-600">
+                  <span className="block text-black dark:text-gray-600">
                     Our Machine Translation (MT) model enables fast and accurate translation between English and multiple Indian languages. Powered by state-of-the-art neural networks, it supports diverse language pairs and delivers high-quality translations for documents, websites, and real-time communication.
                   </span>
                 </div>
@@ -322,7 +340,7 @@ export function Hero() {
             <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4">
               Voice Translation Demos
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-black dark:text-muted-foreground max-w-2xl mx-auto">
               Experience how our model preserves the essence of influential voices while translating them across languages.
             </p>
           </div>
@@ -346,7 +364,7 @@ export function Hero() {
 
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-black dark:text-muted-foreground">
                     <Mic className="h-4 w-4" />
                     <span>Source Voice (English)</span>
                   </div>
@@ -385,7 +403,7 @@ export function Hero() {
 
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-black dark:text-muted-foreground">
                     <Mic className="h-4 w-4" />
                     <span>Source Voice (English)</span>
                   </div>
@@ -426,7 +444,7 @@ export function Hero() {
 
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-black dark:text-muted-foreground">
                     <Mic className="h-4 w-4" />
                     <span>Source Voice (English)</span>
                   </div>

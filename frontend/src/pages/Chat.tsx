@@ -532,7 +532,7 @@ export default function Chat() {
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Backend server is not available. ASR features will not work. Please start the backend server on port 8000.
+                  Our backend service is temporarily down due to funding issues. But feel free to explore our website or use our local deployed software.
                 </AlertDescription>
               </Alert>
             </div>

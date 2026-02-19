@@ -392,7 +392,7 @@ def send_welcome_email(to_email: str, username: str):
             
             <!-- CTA Button -->
             <div style="text-align: center; margin: 30px 0;">
-              <a href="http://localhost:5173" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;">
+              <a href="https://vasha-website.vercel.app" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;">
                 🚀 Start Chatting Now
               </a>
             </div>
@@ -521,34 +521,45 @@ async def login(data: dict):
 
 @app.post("/google-auth")
 async def google_auth(data: dict):
+    print(f"DEBUG: Received /google-auth request")
     token = data.get("token")
     if not token:
+        print("DEBUG: No token provided in request")
         raise HTTPException(status_code=400, detail="Token is required")
     
+    print(f"DEBUG: Token starts with: {token[:10]}...")
     email = None
     
     # Try verifying as ID Token first
     try:
+        print("DEBUG: Attempting verification as ID Token...")
         response = requests.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={token}")
         if response.status_code == 200:
             google_info = response.json()
             email = google_info.get("email")
-    except Exception:
+            print(f"DEBUG: ID Token verification success. Email: {email}")
+    except Exception as e:
+        print(f"DEBUG: ID Token verification exception: {e}")
         pass
         
     # If ID Token failed, try as Access Token
     if not email:
         try:
+            print("DEBUG: Attempting verification as Access Token...")
             response = requests.get(f"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={token}")
             if response.status_code == 200:
                 google_info = response.json()
                 email = google_info.get("email")
-        except Exception:
+                print(f"DEBUG: Access Token verification success. Email: {email}")
+        except Exception as e:
+            print(f"DEBUG: Access Token verification exception: {e}")
             pass
 
     if not email:
+        print("DEBUG: Token verification failed for both ID and Access token types")
         raise HTTPException(status_code=400, detail="Invalid Google token (neither valid ID token nor Access token)")
         
+    print(f"DEBUG: Final verified email: {email}")
     # Check if user exists
     user = users.find_one({"email": email})
     

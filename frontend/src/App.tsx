@@ -22,6 +22,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 // Get Client ID from environment variables
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
+import { BackendStatusBanner } from "@/components/BackendStatusBanner";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -36,6 +38,7 @@ const App = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <BackendStatusBanner />
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
